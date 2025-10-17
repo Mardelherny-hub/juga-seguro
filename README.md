@@ -1,61 +1,182 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎰 Gestión Redes - Sistema Multi-Tenant para Casinos
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema SaaS multi-tenant para gestión automatizada de casinos online con integración WhatsApp Business API.
 
-## About Laravel
+## 🚀 Stack Tecnológico
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Backend:** Laravel 12
+- **Frontend:** Livewire 3 + Tailwind CSS + Alpine.js
+- **Base de Datos:** PostgreSQL 15+
+- **Cache/Queues:** Redis
+- **Auth:** Laravel Breeze (Livewire stack)
+- **Multi-Tenancy:** Columna tenant_id con Global Scopes
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📋 Requisitos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.3+
+- PostgreSQL 15+
+- Redis 7+
+- Composer 2+
+- Node.js 20+ (LTS)
+- NPM 10+
 
-## Learning Laravel
+## 🛠️ Instalación
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Clonar repositorio
+```bash
+git clone https://github.com/TU_USUARIO/gestion-redes-casinos.git
+cd gestion-redes-casinos
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 2. Instalar dependencias
+```bash
+composer install
+npm install
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 3. Instalar paquetes adicionales
+```bash
+composer require spatie/laravel-activitylog
+composer require spatie/laravel-backup
+composer require twilio/sdk
 
-## Laravel Sponsors
+# Publicar configuraciones
+php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="activitylog-migrations"
+php artisan vendor:publish --provider="Spatie\Backup\BackupServiceProvider"
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 4. Configurar entorno
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-### Premium Partners
+Editar `.env` con tus credenciales:
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=gestion_redes
+DB_USERNAME=postgres
+DB_PASSWORD=tu_password
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
 
-## Contributing
+# WhatsApp/Twilio (opcional para desarrollo)
+TWILIO_SID=tu_account_sid
+TWILIO_AUTH_TOKEN=tu_auth_token
+TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 5. Migrar base de datos
+```bash
+php artisan migrate
+```
 
-## Code of Conduct
+### 6. Crear datos de prueba
+```bash
+php artisan db:seed --class=DemoTenantSeeder
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 7. Compilar assets
+```bash
+npm run build
+# O para desarrollo:
+npm run dev
+```
 
-## Security Vulnerabilities
+### 8. Iniciar servidor
+```bash
+php artisan serve
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Acceder a: http://localhost:8000
 
-## License
+## 🔑 Credenciales de Prueba
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Admin:** admin@demo.com | password
+- **Operador:** operador@demo.com | password
+
+## 📁 Estructura del Proyecto
+```
+gestion_redes/
+├── app/
+│   ├── Http/
+│   │   └── Middleware/
+│   │       └── IdentifyTenant.php
+│   ├── Models/
+│   │   ├── Tenant.php
+│   │   ├── Player.php
+│   │   ├── Transaction.php
+│   │   ├── Bonus.php
+│   │   └── User.php
+│   ├── Services/
+│   │   └── TransactionService.php
+│   └── Traits/
+│       └── BelongsToTenant.php
+├── database/
+│   ├── migrations/
+│   │   ├── 2024_10_17_000001_create_tenants_table.php
+│   │   ├── 2024_10_17_000002_add_tenant_to_users.php
+│   │   ├── 2024_10_17_000003_create_players_table.php
+│   │   ├── 2024_10_17_000004_create_transactions_table.php
+│   │   ├── 2024_10_17_000005_create_bonuses_table.php
+│   │   ├── 2024_10_17_000006_create_wheel_spins_table.php
+│   │   └── 2024_10_17_000007_create_whatsapp_messages_table.php
+│   └── seeders/
+│       └── DemoTenantSeeder.php
+└── routes/
+    └── web.php
+```
+
+## 🎯 Funcionalidades Implementadas (Fase 1)
+
+- ✅ Sistema multi-tenant con columna tenant_id
+- ✅ Global Scopes automáticos
+- ✅ Middleware de identificación de tenant
+- ✅ Sistema de transacciones con database locks
+- ✅ Gestión de jugadores con sistema de referidos
+- ✅ Sistema de bonos
+- ✅ Sistema de ruleta (estructura)
+- ✅ Auditoría completa (Spatie Activity Log)
+- ✅ Marca blanca (logo, colores personalizables)
+
+## 🔄 Funcionalidades Pendientes (Próximas Fases)
+
+- [ ] Panel de administración (Livewire)
+- [ ] CRUD de jugadores con búsqueda
+- [ ] Gestión de transacciones (aprobar/rechazar)
+- [ ] Bot WhatsApp automatizado
+- [ ] Sistema de autenticación multi-tenant
+- [ ] Sistema de reportes y estadísticas
+- [ ] Sistema de backups automáticos
+
+## 🧪 Testing
+```bash
+# Probar sistema de transacciones
+php artisan tinker
+
+# Crear depósito
+$player = App\Models\Player::first();
+$user = App\Models\User::first();
+$service = new App\Services\TransactionService();
+$transaction = $service->processDeposit($player, 1000, null, $user);
+$player->fresh()->balance; // Verificar saldo actualizado
+```
+
+## 👥 Equipo
+
+- **Desarrollador:** Victor Alcalde
+- **Cliente:** MGA
+- **Plazo:** 12 días hábiles
+- **Presupuesto:** $5,400 USD
+
+## 📄 Licencia
+
+Propietario - Todos los derechos reservados
+
+## 📞 Contacto
+
+- Email: alcaldevictor1@gmail.com
+- Web: www.estudioalcalde.net.ar
