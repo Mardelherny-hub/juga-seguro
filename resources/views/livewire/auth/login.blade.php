@@ -1,10 +1,10 @@
 <div>
     <div class="mb-8 text-center">
-        @if($currentTenant->logo_url)
-            <img src="{{ $currentTenant->logo_url }}" alt="{{ $currentTenant->name }}" class="h-16 mx-auto mb-4">
+        @if(isset($currentTenant) && $currentTenant?->logo_url)
+            <img src="{{ $currentTenant->logo_url }}" alt="{{ $currentTenant->name ?? 'Logo' }}" class="h-16 mx-auto mb-4">
         @endif
-        <h2 class="text-3xl font-bold" style="color: {{ $currentTenant->primary_color }}">
-            {{ $currentTenant->name }}
+        <h2 class="text-3xl font-bold" style="color: {{ $currentTenant->primary_color ?? '#3B82F6' }}">
+            {{ $currentTenant->name ?? config('app.name') }}
         </h2>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Ingresa a tu panel de gestión
@@ -73,7 +73,7 @@
 
             <x-primary-button 
                 class="ms-3" 
-                style="background-color: {{ $currentTenant->primary_color }}; border-color: {{ $currentTenant->primary_color }}"
+                style="background-color: {{ $currentTenant->primary_color ?? '#3B82F6' }}; border-color: {{ $currentTenant->primary_color ?? '#3B82F6' }}"
             >
                 {{ __('Ingresar') }}
             </x-primary-button>

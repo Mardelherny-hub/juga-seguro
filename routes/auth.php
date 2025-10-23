@@ -3,7 +3,8 @@
 use App\Livewire\Auth\Login;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
+// Login CON tenant (para admins de clientes desde subdominio)
+Route::middleware(['guest', 'tenant.identify'])->group(function () {
     Route::get('login', Login::class)->name('login');
     // Aquí irían register, forgot-password, etc. si las necesitas
 });

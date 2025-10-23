@@ -12,14 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
-        // Agregar el middleware automáticamente a todas las rutas web
-        $middleware->web(append: [
-            IdentifyTenant::class,
-        ]);
-
-        // Registrar alias para middlewares personalizados
+        ->withMiddleware(function (Middleware $middleware) {
+        // NO aplicar globalmente, solo registrar el alias
         $middleware->alias([
+            'tenant.identify' => IdentifyTenant::class,
             'super.admin' => SuperAdmin::class,
         ]);
     })

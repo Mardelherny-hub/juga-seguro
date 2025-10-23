@@ -81,7 +81,8 @@ class IdentifyTenant
         return in_array($host, [
             'localhost',
             '127.0.0.1',
-            '::1'
+            '::1',
+            'localhost:8000'
         ]) || str_ends_with($host, '.test') 
            || str_ends_with($host, '.local');
     }
