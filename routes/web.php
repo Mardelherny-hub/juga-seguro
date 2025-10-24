@@ -6,4 +6,4 @@ use Illuminate\Support\Facades\Route;
 require __DIR__.'/auth.php';
 require __DIR__.'/super-admin.php';
 require __DIR__.'/agent.php';
-//require __DIR__.'/player.php'; // TODO: Activar cuando se implemente la funcionalidad de jugador
+require __DIR__.'/player.php'; 

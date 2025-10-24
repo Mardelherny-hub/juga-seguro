@@ -4,11 +4,11 @@ namespace App\Models;
 
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Str;
 
-class Player extends Model
+class Player extends Authenticatable
 {
     use HasFactory, SoftDeletes, BelongsToTenant;
 
@@ -17,6 +17,7 @@ class Player extends Model
         'name',
         'phone',
         'email',
+        'password',
         'balance',
         'referral_code',
         'referred_by',
@@ -24,9 +25,15 @@ class Player extends Model
         'last_activity_at',
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
     protected $casts = [
         'balance' => 'decimal:2',
         'last_activity_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     // Auto-generar código de referido
@@ -40,6 +47,11 @@ class Player extends Model
     }
 
     // Relaciones
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
@@ -72,6 +84,21 @@ class Player extends Model
         $this->update(['last_activity_at' => now()]);
     }
 
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->status === 'suspended';
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->status === 'blocked';
+    }
+
     public function suspend($reason = null)
     {
         $this->update(['status' => 'suspended']);
@@ -96,5 +123,22 @@ class Player extends Model
         activity()
             ->performedOn($this)
             ->log('player_activated');
+    }
+
+    public static function generateUniqueReferralCode(): string
+    {
+        do {
+            $code = strtoupper(Str::random(8));
+        } while (self::where('referral_code', $code)->exists());
+
+        return $code;
+    }
+
+    public function verifyReferralCode(string $code): bool
+    {
+        return self::where('referral_code', $code)
+            ->where('tenant_id', $this->tenant_id)
+            ->where('id', '!=', $this->id)
+            ->exists();
     }
 }

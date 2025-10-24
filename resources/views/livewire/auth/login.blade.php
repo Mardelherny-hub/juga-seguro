@@ -20,7 +20,7 @@
             <h2 class="text-2xl font-bold text-gray-900">{{ $currentTenant->name }}</h2>
         @else
             <!-- Login Super Admin -->
-            <h2 class="text-2xl font-bold text-gray-900">Gestión Redes - Super Admin</h2>
+            <h2 class="text-2xl font-bold text-gray-900">Next Level - Super Admin</h2>
             <p class="text-sm text-gray-600 mt-1">Panel de Administración</p>
         @endif
     </div>
