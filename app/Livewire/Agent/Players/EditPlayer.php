@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Players;
+namespace App\Livewire\Agent\Players;
 
 use App\Models\Player;
 use Livewire\Component;
@@ -18,7 +18,7 @@ class EditPlayer extends Component
     public $phone = '';
     
     // Datos originales para el activity log
-    private $originalData = [];
+    public $originalData = [];
 
     #[On('openEditPlayer')]
     public function openModal($playerId)
@@ -106,7 +106,7 @@ class EditPlayer extends Component
 
         $this->closeModal();
         $this->dispatch('playerUpdated');
-        $this->dispatch('$refresh');
+        return redirect()->route('dashboard.players');
     }
 
     public function closeModal()
@@ -119,6 +119,6 @@ class EditPlayer extends Component
 
     public function render()
     {
-        return view('livewire.players.edit-player');
+        return view('livewire.agent.players.edit-player');
     }
 }

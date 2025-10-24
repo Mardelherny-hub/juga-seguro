@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Players;
+namespace App\Livewire\Agent\Players;
 
 use App\Models\Player;
 use Livewire\Component;
@@ -28,8 +28,9 @@ class PlayerDetail extends Component
         $this->referrals = $this->player->referrals;
         
         // Obtener activity log
-        $this->activityLog = activity()
-            ->forSubject($this->player)
+        $this->activityLog = \Spatie\Activitylog\Models\Activity::query()
+            ->where('subject_type', Player::class)
+            ->where('subject_id', $this->player->id)
             ->latest()
             ->limit(10)
             ->get();
@@ -85,7 +86,7 @@ class PlayerDetail extends Component
 
     public function render()
     {
-        return view('livewire.players.player-detail', [
+        return view('livewire.agent.players.player-detail', [
             'totalDeposits' => $this->getTotalDeposits(),
             'totalWithdrawals' => $this->getTotalWithdrawals(),
             'totalBonuses' => $this->getTotalBonuses(),

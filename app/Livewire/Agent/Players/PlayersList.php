@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Players;
+namespace App\Livewire\Agent\Players;
 
 use App\Models\Player;
 use Livewire\Component;
@@ -21,6 +21,7 @@ class PlayersList extends Component
         'statusFilter' => ['except' => 'all'],
     ];
 
+   
     public function updatingSearch()
     {
         $this->resetPage();
@@ -74,7 +75,7 @@ class PlayersList extends Component
             ->latest()
             ->paginate(20);
 
-        return view('livewire.players.players-list', [
+        return view('livewire.agent.players.players-list', [
             'players' => $players,
         ]);
     }

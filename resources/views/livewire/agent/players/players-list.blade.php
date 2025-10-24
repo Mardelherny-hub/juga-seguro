@@ -1,9 +1,20 @@
 <div class="space-y-6">
     {{-- Header --}}
     <div class="flex justify-between items-center">
-        <h2 class="text-2xl font-bold text-gray-800">Gestión de Jugadores</h2>
-        <div class="text-sm text-gray-600">
-            Total: {{ $players->total() }} jugadores
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Gestión de Jugadores</h2>
+        <div class="flex items-center space-x-4">
+            <div class="mr-8 text-sm text-gray-600 dark:text-gray-400">
+                Total: {{ $players->total() }} jugadores
+            </div>
+            <button 
+                wire:click="$dispatch('openCreatePlayer')"
+                class="px-4 py-2 ml-8 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center space-x-2"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>Agregar Jugador</span>
+            </button>
         </div>
     </div>
 
@@ -78,7 +89,7 @@
     {{-- Tabla --}}
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <table wire:key="players-table-{{ now()->timestamp }}" class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>

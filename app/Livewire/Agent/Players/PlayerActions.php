@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Players;
+namespace App\Livewire\Agent\Players;
 
 use App\Models\Player;
 use Livewire\Component;
@@ -137,6 +137,6 @@ class PlayerActions extends Component
 
     public function render()
     {
-        return view('livewire.players.player-actions');
+        return view('livewire.agent.players.player-actions');
     }
 }

@@ -4,7 +4,6 @@ namespace App\Livewire\Agent;
 
 use App\Models\Player;
 use App\Models\Transaction;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Dashboard extends Component
@@ -61,6 +60,6 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.dashboard');
+        return view('livewire.agent.dashboard');
     }
 }
