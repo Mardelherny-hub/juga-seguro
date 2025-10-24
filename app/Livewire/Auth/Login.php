@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Models\Tenant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -13,6 +14,8 @@ use Livewire\Component;
 
 class Login extends Component
 {
+    public ?Tenant $tenant = null;
+
     #[Rule('required|email')]
     public string $email = '';
 
@@ -26,7 +29,7 @@ class Login extends Component
      * Attempt to authenticate the user for the current tenant or super admin.
      */
     public function login(): void
-    {
+    {    
         $this->validate();
 
         $this->ensureIsNotRateLimited();
@@ -74,11 +77,11 @@ class Login extends Component
         }
 
         // Cliente Admin: validar por tenant
-        $currentTenant = request()->attributes->get('current_tenant');
+        $currentTenant = $this->tenant;
 
         if (!$currentTenant) {
             throw ValidationException::withMessages([
-                'email' => __('No se pudo identificar el cliente.'),
+                'email' => 'No se pudo identificar el cliente.',
             ]);
         }
 
@@ -120,6 +123,14 @@ class Login extends Component
             session('url.intended', route('dashboard', absolute: false)),
             navigate: true
         );
+    }
+
+    public function mount()
+    {
+        // Intentar obtener tenant de múltiples fuentes
+        $this->tenant = request()->attributes->get('current_tenant') 
+                    ?? config('app.current_tenant')
+                    ?? (session('current_tenant_id') ? Tenant::find(session('current_tenant_id')) : null);
     }
 
     /**
