@@ -1,13 +1,17 @@
 <x-layouts.app>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-white leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Transacciones Pendientes') }}
         </h2>
     </x-slot>
 
-    @livewire('agent.dashboard')
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @livewire('agent.transactions.pending-transactions')
+        </div>
+    </div>
 
-    {{-- Modales de Transacciones --}}
+    {{-- Modales --}}
     @livewire('agent.transactions.transaction-detail')
     @livewire('agent.transactions.transaction-approval')
     @livewire('agent.transactions.transaction-rejection')

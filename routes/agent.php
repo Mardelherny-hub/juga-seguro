@@ -19,15 +19,9 @@ Route::middleware(['auth', 'tenant.identify'])->group(function () {
     Route::view('/profile', 'profile')->name('profile');
 
 
-    // Gestión de Jugadores
-    /*Route::get('/players', PlayersIndex::class)->name('players.index');
-    Route::get('/players/{player}', PlayersShow::class)->name('players.show');
-
     // Gestión de Transacciones
-    Route::get('/transactions', TransactionsIndex::class)->name('transactions.index');
+    Route::view('/dashboard/transactions/pending', 'agent.transactions.pending')->name('dashboard.transactions.pending');
+    Route::view('/dashboard/transactions/history', 'agent.transactions.history')->name('dashboard.transactions.history');
 
-    // Profile (implementaremos después)
-    Route::get('/profile', function () {
-        return view('profile');
-    })->name('profile'); */
+
 }); 

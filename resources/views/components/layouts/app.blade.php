@@ -48,11 +48,20 @@
                                    style="{{ request()->routeIs('players.*') ? 'border-color: ' . $currentTenant->primary_color : '' }}">
                                     Jugadores
                                 </a>
-                                <a href="{{-- route('transactions.index') --}}" wire:navigate 
-                                   class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out
-                                   {{ request()->routeIs('transactions.*') ? 'border-indigo-400 text-gray-900 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
-                                   style="{{ request()->routeIs('transactions.*') ? 'border-color: ' . $currentTenant->primary_color : '' }}">
+                                {{-- Transacciones --}}
+                                <a href="{{ route('dashboard.transactions.pending') }}" wire:navigate 
+                                class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out
+                                {{ request()->routeIs('dashboard.transactions.*') ? 'border-indigo-400 text-gray-900 dark:text-gray-100 focus:border-indigo-700' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}"
+                                style="{{ request()->routeIs('dashboard.transactions.*') ? 'border-color: ' . $currentTenant->primary_color : '' }}">
                                     Transacciones
+                                    @php
+                                        $pendingCount = \App\Models\Transaction::pending()->count();
+                                    @endphp
+                                    @if($pendingCount > 0)
+                                        <span class="ml-2 px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full animate-pulse">
+                                            {{ $pendingCount }}
+                                        </span>
+                                    @endif
                                 </a>
                             </div>
                         </div>

@@ -17,6 +17,9 @@ class Dashboard extends Component
     public $todayWithdrawals;
     public $recentTransactions;
 
+    // Listener para actualizar cuando se procesa una transacción
+    protected $listeners = ['transactionProcessed' => 'loadMetrics', 'refreshPending' => 'loadMetrics'];
+
     public function mount()
     {
         $this->loadMetrics();
