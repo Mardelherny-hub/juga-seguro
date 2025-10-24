@@ -13,6 +13,15 @@ Route::middleware(['auth', 'tenant.identify'])->group(function () {
     Route::get('/dashboard', Dashboard::class);
 
     // Gestión de Jugadores
+    Route::get('/dashboard/players', function () {
+        return view('pages.players');
+    })->name('dashboard.players');
+
+    //profile (temporal - reestructurar en próxima sesión)
+    Route::view('/profile', 'profile')->name('profile');
+
+
+    // Gestión de Jugadores
     /*Route::get('/players', PlayersIndex::class)->name('players.index');
     Route::get('/players/{player}', PlayersShow::class)->name('players.show');
 
