@@ -193,10 +193,15 @@
             </main>
         </div>
 
-                <!-- Toast Notifications -->
-        <x-toast-notifications />
+        
 
         @livewireScripts
+
+        <!-- Toast Notifications -->
+        <x-toast-notifications />
+
+        {{-- Panel de Actividad en Tiempo Real --}}
+        @livewire('agent.activity-panel')
         
     </body>
 </html>

@@ -130,5 +130,8 @@
         <!-- Toast Notifications -->
         <x-toast-notifications />
 
+        {{-- Panel de Actividad en Tiempo Real --}}
+        @livewire('player.activity-panel')
+
     </body>
 </html>

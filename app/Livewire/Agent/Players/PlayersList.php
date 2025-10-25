@@ -21,6 +21,12 @@ class PlayersList extends Component
         'statusFilter' => ['except' => 'all'],
     ];
 
+    protected $listeners = [
+        'playerUpdated' => '$refresh',
+        'transactionProcessed' => '$refresh',
+        'playerBalanceChanged' => '$refresh'
+    ];
+
    
     public function updatingSearch()
     {

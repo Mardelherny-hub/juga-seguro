@@ -8,8 +8,11 @@ class BalanceDisplay extends Component
 {
     public $balance;
 
-    protected $listeners = ['refreshBalance' => 'updateBalance'];
-
+    protected $listeners = [
+        'refreshBalance' => 'updateBalance',
+        'balanceUpdated' => 'updateBalance',
+        'transactionProcessed' => 'updateBalance'
+    ];
     public function mount()
     {
         $this->updateBalance();
@@ -18,8 +21,11 @@ class BalanceDisplay extends Component
     public function updateBalance()
     {
         $player = auth()->guard('player')->user();
-        $player->refresh();
-        $this->balance = $player->balance;
+        if ($player) {
+            $player->refresh();
+            $this->balance = $player->balance;
+            $this->dispatch('$refresh');
+        }
     }
 
     public function render()

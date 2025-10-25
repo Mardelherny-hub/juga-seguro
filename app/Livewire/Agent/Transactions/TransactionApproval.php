@@ -71,6 +71,8 @@ class TransactionApproval extends Component
             // Refrescar componentes
             $this->dispatch('refreshPending');
             $this->dispatch('transactionProcessed');
+            $this->dispatch('balanceUpdated'); // NUEVO - para BalanceDisplay del Player
+            $this->dispatch('playerBalanceChanged', playerId: $this->transaction->player_id); // NUEVO - para actualizar player específico
 
             $this->closeModal();
 

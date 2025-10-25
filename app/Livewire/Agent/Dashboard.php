@@ -18,8 +18,12 @@ class Dashboard extends Component
     public $recentTransactions;
 
     // Listener para actualizar cuando se procesa una transacción
-    protected $listeners = ['transactionProcessed' => 'loadMetrics', 'refreshPending' => 'loadMetrics'];
-
+    protected $listeners = [
+        'transactionProcessed' => 'loadMetrics',
+        'refreshPending' => 'loadMetrics',
+        'playerUpdated' => 'loadMetrics',
+        'playerBalanceChanged' => 'loadMetrics'
+    ];
     public function mount()
     {
         $this->loadMetrics();
