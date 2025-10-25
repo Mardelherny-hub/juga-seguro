@@ -4,6 +4,8 @@ namespace App\Livewire\Agent\Transactions;
 
 use App\Models\Transaction;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use App\Livewire\Traits\WithToast;
 
 class RejectTransaction extends Component
 {
@@ -56,10 +58,7 @@ class RejectTransaction extends Component
             ->withProperties(['reason' => $this->rejectionReason])
             ->log('transaction_rejected');
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Transacción rechazada'
-        ]);
+        $this->showToast('Transacción rechazada', 'success');
 
         $this->dispatch('transactionProcessed');
         $this->close();

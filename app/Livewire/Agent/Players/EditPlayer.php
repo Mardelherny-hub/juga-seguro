@@ -6,9 +6,12 @@ use App\Models\Player;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Illuminate\Validation\Rule;
+use App\Livewire\Traits\WithToast;
 
 class EditPlayer extends Component
 {
+    use WithToast;
+
     public $showModal = false;
     public $playerId = null;
     public $player = null;
@@ -99,10 +102,7 @@ class EditPlayer extends Component
                 ->log('Información del jugador actualizada');
         }
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Información actualizada correctamente'
-        ]);
+        $this->showToast('Información actualizada correctamente', 'success');
 
         $this->closeModal();
         $this->dispatch('playerUpdated');

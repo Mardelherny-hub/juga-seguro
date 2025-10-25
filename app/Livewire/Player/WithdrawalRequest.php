@@ -3,9 +3,12 @@
 namespace App\Livewire\Player;
 
 use Livewire\Component;
+use App\Livewire\Traits\WithToast;
 
 class WithdrawalRequest extends Component
 {
+    use WithToast;
+
     public $isOpen = false;
     public $amount = '';
     public $withdrawalMethod = 'chinchontop'; // Default
@@ -67,10 +70,7 @@ class WithdrawalRequest extends Component
             ->exists();
 
         if ($hasPendingWithdrawal) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Ya tienes un retiro pendiente. Espera a que sea procesado.'
-            ]);
+            $this->showToast('Ya tienes un retiro pendiente. Espera a que sea procesado.', 'error');
             return;
         }
 
@@ -99,10 +99,7 @@ class WithdrawalRequest extends Component
             ->log('withdrawal_requested');
 
         // Notificación
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => '¡Solicitud de retiro enviada! Te avisaremos cuando sea procesada.'
-        ]);
+        $this->showToast('¡Solicitud de retiro enviada! Te avisaremos cuando sea procesada.', 'success');
 
         // Refrescar dashboard
         $this->dispatch('refreshDashboard');

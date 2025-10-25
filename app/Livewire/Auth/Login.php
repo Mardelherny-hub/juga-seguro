@@ -215,7 +215,7 @@ class Login extends Component
         );
     }
 
-    #[Layout('layouts.guest')]
+    #[Layout('layouts.player-auth')]
     public function render()
     {
         return view('livewire.auth.login');

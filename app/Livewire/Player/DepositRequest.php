@@ -5,9 +5,11 @@ namespace App\Livewire\Player;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
+use App\Livewire\Traits\WithToast;
 
 class DepositRequest extends Component
 {
+    use WithToast;
     use WithFileUploads;
 
     public $isOpen = false;
@@ -89,10 +91,7 @@ class DepositRequest extends Component
             ->log('deposit_requested');
 
         // Notificación
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => '¡Solicitud enviada! Te avisaremos cuando sea aprobada.'
-        ]);
+        $this->showToast('¡Solicitud enviada! Te avisaremos cuando sea aprobada.', 'success');
 
         // Refrescar dashboard
         $this->dispatch('refreshDashboard');

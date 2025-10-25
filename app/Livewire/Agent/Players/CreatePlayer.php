@@ -7,9 +7,13 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Livewire\Traits\WithToast;
 
 class CreatePlayer extends Component
 {
+
+    use WithToast;
+
     public $showModal = false;
     public $name = '';
     public $email = '';
@@ -77,10 +81,7 @@ class CreatePlayer extends Component
             ->causedBy(auth()->user())
             ->log('Jugador creado desde panel admin');
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Jugador creado correctamente'
-        ]);
+        $this->showToast('Jugador creado correctamente', 'success');
 
         $this->closeModal();
         $this->dispatch('playerCreated');

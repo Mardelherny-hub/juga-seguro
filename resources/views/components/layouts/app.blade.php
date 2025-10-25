@@ -8,9 +8,10 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div wire:poll.5s class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <!-- Navigation -->
             <nav class="bg-white dark:bg-gray-800 border-b-2" style="border-bottom-color: {{ $currentTenant->primary_color }}">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -194,6 +195,8 @@
 
                 <!-- Toast Notifications -->
         <x-toast-notifications />
+
+        @livewireScripts
         
     </body>
 </html>

@@ -5,9 +5,12 @@ namespace App\Livewire\Agent\Players;
 use App\Models\Player;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use App\Livewire\Traits\WithToast;
 
 class PlayerActions extends Component
 {
+    use WithToast;
+
     public $showSuspendModal = false;
     public $showBlockModal = false;
     public $showActivateModal = false;
@@ -55,10 +58,7 @@ class PlayerActions extends Component
             ->withProperties(['reason' => $this->reason])
             ->log('Jugador suspendido');
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Jugador suspendido correctamente'
-        ]);
+        $this->showToast('Jugador suspendido correctamente', 'success');
 
         $this->closeSuspendModal();
         $this->dispatch('playerUpdated');
@@ -85,10 +85,7 @@ class PlayerActions extends Component
             ->withProperties(['reason' => $this->reason])
             ->log('Jugador bloqueado');
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Jugador bloqueado correctamente'
-        ]);
+        $this->showToast('Jugador bloqueado correctamente', 'success');
 
         $this->closeBlockModal();
         $this->dispatch('playerUpdated');
@@ -107,10 +104,7 @@ class PlayerActions extends Component
             ->causedBy(auth()->user())
             ->log('Jugador activado');
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Jugador activado correctamente'
-        ]);
+        $this->showToast('Jugador activado correctamente', 'success');
 
         $this->closeActivateModal();
         $this->dispatch('playerUpdated');

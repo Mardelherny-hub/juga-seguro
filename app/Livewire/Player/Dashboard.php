@@ -3,9 +3,21 @@
 namespace App\Livewire\Player;
 
 use Livewire\Component;
+use Livewire\WithPagination;
+use Carbon\Carbon;
+use App\Models\Transaction;
+use App\Models\Bonus;
+use App\Models\Referral;
+use App\Models\Player;
+use App\Models\Tenant;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use App\Livewire\Traits\WithToast;
 
 class Dashboard extends Component
 {
+    use WithToast;
+
     public $player;
     public $balance;
     public $activeBonuses;
@@ -53,10 +65,7 @@ class Dashboard extends Component
 
     public function copyReferralCode()
     {
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Código copiado al portapapeles'
-        ]);
+        $this->showToast('Código copiado al portapapeles', 'success');
     }
 
     public function render()

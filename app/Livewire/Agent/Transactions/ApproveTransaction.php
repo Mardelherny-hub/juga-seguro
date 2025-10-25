@@ -5,9 +5,13 @@ namespace App\Livewire\Agent\Transactions;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use App\Livewire\Traits\WithToast;
 
 class ApproveTransaction extends Component
 {
+    use WithToast;
+
     public $transaction;
     public $isOpen = false;
     public $notes = '';
@@ -37,10 +41,7 @@ class ApproveTransaction extends Component
             } elseif ($this->transaction->type === 'withdrawal') {
                 // Decrementar saldo (verificar que tenga suficiente)
                 if ($player->balance < $this->transaction->amount) {
-                    $this->dispatch('notify', [
-                        'type' => 'error',
-                        'message' => 'El jugador no tiene saldo suficiente'
-                    ]);
+                    $this->showToast('El jugador no tiene saldo suficiente', 'error');
                     return;
                 }
                 $player->decrement('balance', $this->transaction->amount);
@@ -62,10 +63,7 @@ class ApproveTransaction extends Component
                 ->log('transaction_approved');
         });
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Transacción aprobada correctamente'
-        ]);
+        $this->showToast('Transacción aprobada correctamente', 'success');
 
         $this->dispatch('transactionProcessed');
         $this->close();

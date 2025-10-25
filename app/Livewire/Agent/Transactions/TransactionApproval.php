@@ -6,9 +6,12 @@ use App\Models\Transaction;
 use App\Services\TransactionService;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use App\Livewire\Traits\WithToast;
 
 class TransactionApproval extends Component
 {
+    use WithToast;
+
     public $showModal = false;
     public $transaction = null;
     public $player = null;
@@ -29,10 +32,7 @@ class TransactionApproval extends Component
         
         // Validar que esté pendiente
         if ($this->transaction->status !== 'pending') {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Esta transacción ya fue procesada'
-            ]);
+            $this->showToast('Esta transacción ya fue procesada', 'error');
             return;
         }
         
@@ -56,10 +56,7 @@ class TransactionApproval extends Component
     {
         // Validación de saldo para retiros
         if ($this->transaction->type === 'withdrawal' && !$this->hasSufficientBalance) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'El jugador no tiene saldo suficiente para este retiro'
-            ]);
+            $this->showToast('El jugador no tiene saldo suficiente para este retiro', 'error');
             return;
         }
 
@@ -69,10 +66,7 @@ class TransactionApproval extends Component
             $transactionService = app(TransactionService::class);
             $transactionService->approveTransaction($this->transaction, auth()->user());
 
-            $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => 'Transacción aprobada correctamente'
-            ]);
+            $this->showToast('Transacción aprobada correctamente', 'success');
 
             // Refrescar componentes
             $this->dispatch('refreshPending');
@@ -80,11 +74,13 @@ class TransactionApproval extends Component
 
             $this->closeModal();
 
+            // Después de los dispatch exitosos, agregar:
+            $this->dispatch('$refresh')->to('agent.transactions.pending-transactions');
+            $this->dispatch('$refresh')->to('agent.transactions.transaction-history');
+
+
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Error al aprobar: ' . $e->getMessage()
-            ]);
+            $this->showToast('Error al aprobar: ' . $e->getMessage(), 'error');
         } finally {
             $this->isProcessing = false;
         }

@@ -25,10 +25,10 @@ class PendingBadge extends Component
         $this->count = Transaction::pending()->count();
     }
 
-    public function handleMonitorUpdate($data)
+    public function handleMonitorUpdate($count = null)
     {
-        if (isset($data['count'])) {
-            $this->count = $data['count'];
+        if ($count !== null) {
+            $this->count = $count;
         } else {
             $this->updateCount();
         }

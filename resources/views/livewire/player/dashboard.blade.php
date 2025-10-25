@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div wire:poll.5s="loadData" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
     @php
         $tenant = $player->tenant;

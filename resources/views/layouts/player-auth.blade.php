@@ -31,13 +31,17 @@
             
             <!-- Logo del currentTenant -->
             <div class="text-center mb-8">
-                @if($currentTenant->logo_url)
+                @if(isset($currentTenant) && $currentTenant->logo_url)
                     <img src="{{ $currentTenant->logo_url }}" 
-                         alt="{{ $currentTenant->name }}" 
-                         class="h-16 w-auto mx-auto mb-4">
-                @else
+                        alt="{{ $currentTenant->name }}" 
+                        class="h-16 w-auto mx-auto mb-4">
+                @elseif(isset($currentTenant))
                     <h1 class="text-4xl font-bold text-white mb-2">
                         {{ $currentTenant->name }}
+                    </h1>
+                @else
+                    <h1 class="text-4xl font-bold text-white mb-2">
+                        Next Level
                     </h1>
                 @endif
             </div>
@@ -49,7 +53,7 @@
 
             <!-- Footer -->
             <p class="text-center text-sm text-gray-400 mt-6">
-                © {{ date('Y') }} {{ $currentTenant->name }}. Todos los derechos reservados.
+                © {{ date('Y') }} {{ $currentTenant->name ?? 'Next Level' }}. Todos los derechos reservados.
             </p>
         </div>
     </div>

@@ -5,9 +5,14 @@ namespace App\Livewire\Agent\Players;
 use App\Models\Player;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\DB;
+use App\Livewire\Traits\WithToast;
 
 class PlayerDetail extends Component
 {
+
+    use WithToast;
+
     public $showModal = false;
     public $player = null;
     public $transactions = [];
@@ -49,10 +54,7 @@ class PlayerDetail extends Component
 
     public function copyReferralCode()
     {
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Código copiado al portapapeles'
-        ]);
+        $this->showToast('Código copiado al portapapeles', 'success');
     }
 
     public function getTotalDeposits()

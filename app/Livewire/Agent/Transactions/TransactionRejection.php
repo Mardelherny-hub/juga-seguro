@@ -6,9 +6,12 @@ use App\Models\Transaction;
 use App\Services\TransactionService;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use App\Livewire\Traits\WithToast;
 
 class TransactionRejection extends Component
 {
+    use WithToast;
+
     public $showModal = false;
     public $transaction = null;
     public $player = null;
@@ -47,10 +50,7 @@ class TransactionRejection extends Component
         
         // Validar que esté pendiente
         if ($this->transaction->status !== 'pending') {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Esta transacción ya fue procesada'
-            ]);
+            $this->showToast('Esta transacción ya fue procesada', 'error');
             return;
         }
         
@@ -84,10 +84,7 @@ class TransactionRejection extends Component
                 $this->rejectionReason
             );
 
-            $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => 'Transacción rechazada correctamente'
-            ]);
+            $this->showToast('Transacción rechazada correctamente', 'success');
 
             // Refrescar componentes
             $this->dispatch('refreshPending');
@@ -95,11 +92,12 @@ class TransactionRejection extends Component
 
             $this->closeModal();
 
+            $this->dispatch('$refresh')->to('agent.transactions.pending-transactions');
+            $this->dispatch('$refresh')->to('agent.transactions.transaction-history');
+
+
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Error al rechazar: ' . $e->getMessage()
-            ]);
+            $this->showToast('Error al rechazar: ' . $e->getMessage(), 'error');
         } finally {
             $this->isProcessing = false;
         }

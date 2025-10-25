@@ -1,88 +1,102 @@
 @php
-        $currentTenant = $this->tenant;
+    $currentTenant = $this->tenant ?? null;
 @endphp
-
 <div>
-    <!-- Session Status -->
-    @if (session('status'))
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ session('status') }}
-        </div>
-    @endif
-
-    <!-- Título dinámico según tenant -->
-    <div class="mb-6 text-center">
-        @if(isset($currentTenant))
-            <!-- Login con marca blanca -->
-            @if($currentTenant->logo_url)
-                <img src="{{ $currentTenant->logo_url }}" alt="{{ $currentTenant->name }}" class="h-16 mx-auto mb-4">
-            @endif
-            <h2 class="text-2xl font-bold text-gray-900">{{ $currentTenant->name }}</h2>
-        @else
-            <!-- Login Super Admin -->
-            <h2 class="text-2xl font-bold text-gray-900">Next Level - Super Admin</h2>
-            <p class="text-sm text-gray-600 mt-1">Panel de Administración</p>
-        @endif
+    <!-- Título -->
+    <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-white mb-2">Iniciar Sesión</h2>
+        <p class="text-gray-400 text-sm">Accede a tu cuenta</p>
     </div>
 
-    <form wire:submit.prevent="login">
+    <!-- Formulario -->
+    <form wire:submit.prevent="login" class="space-y-4">
+        
         <!-- Email -->
         <div>
-            <label for="email" class="block font-medium text-sm text-gray-700">Email</label>
+            <label class="block text-sm font-medium text-gray-300 mb-1.5">
+                Email <span class="text-red-400">*</span>
+            </label>
             <input 
-                wire:model="email" 
-                id="email" 
-                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" 
                 type="email" 
-                name="email" 
-                required 
-                autofocus 
-                autocomplete="username"
+                wire:model.blur="email"
+                placeholder="tu@email.com"
+                required
+                autofocus
+                class="w-full px-4 py-3 bg-white/5 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 transition
+                    {{ $errors->has('email') ? 'border-red-500' : 'border-white/10 focus:border-white/30' }}"
             >
             @error('email') 
-                <span class="text-red-600 text-sm mt-2">{{ $message }}</span> 
+                <p class="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    {{ $message }}
+                </p> 
             @enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <label for="password" class="block font-medium text-sm text-gray-700">Contraseña</label>
+        <!-- Contraseña -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-1.5">
+                Contraseña <span class="text-red-400">*</span>
+            </label>
             <input 
-                wire:model="password" 
-                id="password" 
-                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full"
-                type="password"
-                name="password"
-                required 
-                autocomplete="current-password"
+                type="password" 
+                wire:model.blur="password"
+                placeholder="••••••••"
+                required
+                class="w-full px-4 py-3 bg-white/5 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 transition
+                    {{ $errors->has('password') ? 'border-red-500' : 'border-white/10 focus:border-white/30' }}"
             >
             @error('password') 
-                <span class="text-red-600 text-sm mt-2">{{ $message }}</span> 
+                <p class="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    {{ $message }}
+                </p> 
             @enderror
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember" class="inline-flex items-center">
+        <!-- Recordarme -->
+        <div class="flex items-center justify-between">
+            <label class="flex items-center gap-2 cursor-pointer">
                 <input 
-                    wire:model="remember" 
-                    id="remember" 
                     type="checkbox" 
-                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" 
-                    name="remember"
+                    wire:model="remember"
+                    class="w-4 h-4 rounded border-gray-600 bg-white/5 text-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-offset-0"
                 >
-                <span class="ms-2 text-sm text-gray-600">Recordarme</span>
+                <span class="text-sm text-gray-300">Recordarme</span>
             </label>
+            
+            <a href="#" class="text-sm text-purple-400 hover:text-purple-300 underline">
+                ¿Olvidaste tu contraseña?
+            </a>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <button 
-                type="submit" 
-                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                @if(isset($currentTenant)) style="background-color: {{ $currentTenant->primary_color }}; border-color: {{ $currentTenant->primary_color }};" @endif
-            >
-                Ingresar
-            </button>
-        </div>
+        <!-- Botón de Login -->
+        <button 
+            type="submit"
+            wire:loading.attr="disabled"
+            class="w-full py-3.5 rounded-lg text-white font-semibold text-base transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+            style="background: linear-gradient(135deg, {{ $currentTenant->primary_color ?? '#9333ea' }} 0%, {{ $currentTenant->secondary_color ?? '#7e22ce' }} 100%);"
+        >
+            <span wire:loading.remove wire:target="login">Iniciar Sesión</span>
+            <span wire:loading wire:target="login" class="flex items-center justify-center gap-2">
+                <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Iniciando...
+            </span>
+        </button>
+
+        <!-- Link a Registro -->
+        <p class="text-center text-sm text-gray-400 mt-6">
+            ¿No tienes una cuenta? 
+            <a href="{{ route('player.register') }}" class="text-purple-400 hover:text-purple-300 font-semibold underline">
+                Regístrate aquí
+            </a>
+        </p>
     </form>
 </div>
