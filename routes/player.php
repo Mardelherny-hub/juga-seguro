@@ -36,6 +36,8 @@ Route::prefix('player')
         // Referidos
         Route::view('/referrals', 'player.referrals')->name('referrals');
 
+        //Route::get('/chat', fn() => view('player.chat'))->name('chat');
+
         // Logout
         Route::post('/logout', function () {
             auth()->guard('player')->logout();

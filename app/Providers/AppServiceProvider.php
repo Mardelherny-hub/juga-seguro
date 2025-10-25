@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Transaction;
+use App\Models\Player;
+use App\Observers\TransactionObserver;
+use App\Observers\PlayerObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Registrar observers
+        Transaction::observe(TransactionObserver::class);
+        Player::observe(PlayerObserver::class);
     }
 }

@@ -72,6 +72,12 @@ class Player extends Authenticatable
         return $this->hasMany(Player::class, 'referred_by');
     }
 
+
+    public function messages()
+    {
+        return $this->hasMany(PlayerMessage::class);
+    }
+
     // Scopes
     public function scopeActive($query)
     {

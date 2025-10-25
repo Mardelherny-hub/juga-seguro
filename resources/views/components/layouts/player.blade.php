@@ -44,6 +44,30 @@
                             </svg>
                             @livewire('player.balance-display')
 
+                            {{-- chat --}}
+@livewire('player.player-chat', key('chat-widget'))
+
+<button onclick="Livewire.dispatch('toggle-chat')"
+   class="relative flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">
+    <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+    </svg>
+    <span class="hidden sm:inline text-gray-300">Mensajes</span>
+    
+    @php
+        $unreadCount = \App\Models\PlayerMessage::where('player_id', auth()->guard('player')->id())
+            ->whereNull('read_by_player_at')
+            ->count();
+    @endphp
+    
+    @if($unreadCount > 0)
+    <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+        {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+    </span>
+    @endif
+</button>
+                            
+
                             <!-- User Dropdown -->
                             <div class="relative" x-data="{ open: false }">
                                 <button @click="open = !open" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">

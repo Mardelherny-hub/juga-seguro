@@ -24,4 +24,6 @@ Route::middleware(['auth', 'tenant.identify'])->group(function () {
     Route::view('/dashboard/transactions/history', 'agent.transactions.history')->name('dashboard.transactions.history');
     Route::view('/dashboard/transactions/monitor', 'agent.transactions.monitor')->name('dashboard.transactions.monitor');
 
+    // Route pane de mensajes del agente
+    Route::get('/messages', fn() => view('agent.messages'))->name('messages');
 }); 

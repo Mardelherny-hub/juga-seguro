@@ -99,6 +99,29 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Mensajes -->
+                                <a href="{{ route('messages') }}" 
+                                wire:navigate
+                                class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-700 rounded-lg transition {{ request()->routeIs('agent.messages') ? 'bg-gray-700' : '' }}">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                    </svg>
+                                    <span>Mensajes</span>
+                                    
+                                    @php
+                                        $unreadCount = \App\Models\PlayerMessage::where('tenant_id', auth()->user()->tenant_id)
+                                            ->where('sender_type', 'player')
+                                            ->whereNull('read_by_agent_at')
+                                            ->count();
+                                    @endphp
+                                    
+                                    @if($unreadCount > 0)
+                                    <span class="ml-auto bg-red-600 text-white text-xs px-2 py-1 rounded-full font-bold">
+                                        {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                                    </span>
+                                    @endif
+                                </a>
                             </div>
                         </div>
 
