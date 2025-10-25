@@ -38,7 +38,12 @@ Route::prefix('player')
 
         //Route::get('/chat', fn() => view('player.chat'))->name('chat');
 
+        //
         Route::get('/bonuses', fn() => view('player.bonuses'))->name('bonuses');
+
+        // Ruleta de la Suerte
+        Route::get('/wheel', fn() => view('player.wheel'))->name('wheel');
+
 
         // Logout
         Route::post('/logout', function () {
