@@ -33,11 +33,13 @@ class BonusService
             $player->increment('balance', $amount);
             
             // Crear transacción de tipo bonus
+            // Crear transacción de tipo bonus
             $transaction = Transaction::create([
                 'tenant_id' => $player->tenant_id,
                 'player_id' => $player->id,
                 'type' => 'bonus',
                 'amount' => $amount,
+                'balance_before' => $player->balance, // ← AGREGAR ESTA LÍNEA
                 'status' => 'completed',
                 'description' => $description ?? "Bono {$type}",
                 'hash' => Str::random(32),
