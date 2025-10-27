@@ -20,6 +20,7 @@ class Tenant extends Model
         'secondary_color',
         'whatsapp_token',
         'whatsapp_number',
+        'casino_url',
         'settings',
         'bank_accounts',
         'is_active',
@@ -95,5 +96,34 @@ class Tenant extends Model
     public function activeBankAccount()
     {
         return $this->hasOne(BankAccount::class)->where('is_active', true)->where('status', 'active');
+    }
+
+    public function getWhatsappLinkAttribute()
+    {
+        if (!$this->whatsapp_number) {
+            return null;
+        }
+        
+        return "https://wa.me/{$this->whatsapp_number}";
+    }
+
+    public function getFormattedWhatsappAttribute()
+    {
+        if (!$this->whatsapp_number) {
+            return null;
+        }
+        
+        // Formato: +54 9 223 4567890 -> +54 9 223 456-7890
+        $number = $this->whatsapp_number;
+        
+        if (strlen($number) >= 10) {
+            return '+' . substr($number, 0, 2) . ' ' . 
+                substr($number, 2, 1) . ' ' . 
+                substr($number, 3, 3) . ' ' . 
+                substr($number, 6, 3) . '-' . 
+                substr($number, 9);
+        }
+        
+        return '+' . $number;
     }
 }

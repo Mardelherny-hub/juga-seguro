@@ -83,6 +83,7 @@
             </div>
 
             <livewire:agent.bonus-settings />
+            <livewire:agent.contact-settings />
 
         </div>
 

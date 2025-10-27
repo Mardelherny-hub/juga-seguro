@@ -33,4 +33,7 @@ Route::middleware(['auth', 'tenant.identify'])->group(function () {
     // Gestión de Cuentas Bancarias
     Route::view('/dashboard/bank-accounts', 'agent.bank-accounts.index')
     ->name('dashboard.bank-accounts');
+
+    //settings
+    Route::view('/settings', 'agent.settings')->name('settings');
 }); 

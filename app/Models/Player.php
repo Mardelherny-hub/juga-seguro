@@ -79,6 +79,21 @@ class Player extends Authenticatable
         return $this->hasMany(PlayerMessage::class);
     }
 
+    public function unblockRequests()
+    {
+        return $this->hasMany(UnblockRequest::class);
+    }
+
+    public function pendingUnblockRequest()
+    {
+        return $this->hasOne(UnblockRequest::class)->where('status', 'pending');
+    }
+
+    public function hasPendingUnblockRequest(): bool
+    {
+        return $this->unblockRequests()->where('status', 'pending')->exists();
+    }
+
     // Scopes
     public function scopeActive($query)
     {
