@@ -21,6 +21,12 @@ class Edit extends Component
     public $current_logo_url;
     public $is_active;
 
+    // Campos de suscripción
+    public $subscription_type;
+    public $monthly_fee;
+    public $chips_balance;
+    public $chip_price;
+
     public $showDnsInstructions = false;
     public $dnsInstructions = '';
 
@@ -39,6 +45,10 @@ class Edit extends Component
         $this->secondary_color = $tenant->secondary_color;
         $this->current_logo_url = $tenant->logo_url;
         $this->is_active = $tenant->is_active;
+        $this->subscription_type = $tenant->subscription_type;
+        $this->monthly_fee = $tenant->monthly_fee;
+        $this->chips_balance = $tenant->chips_balance;
+        $this->chip_price = $tenant->chip_price;
     }
 
     protected function rules()
@@ -52,6 +62,9 @@ class Edit extends Component
             'secondary_color' => 'required|string|max:7',
             'logo' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
+            'subscription_type' => 'required|in:monthly,prepaid',
+            'monthly_fee' => 'required_if:subscription_type,monthly|nullable|numeric|min:0',
+            'chip_price' => 'required|numeric|min:0',
         ];
     }
 
@@ -90,6 +103,9 @@ class Edit extends Component
             'secondary_color' => $this->secondary_color,
             'logo_url' => $logoUrl,
             'is_active' => $this->is_active,
+            'subscription_type' => $this->subscription_type,
+            'monthly_fee' => $this->subscription_type === 'monthly' ? $this->monthly_fee : null,
+            'chip_price' => $this->chip_price,
         ]);
         
         // Si cambió el dominio, mostrar instrucciones

@@ -105,6 +105,16 @@
                                         </button>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                        @if($client->subscription_type === 'prepaid')
+                                            <button 
+                                                wire:click="openLoadChipsModal({{ $client->id }})"
+                                                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                                title="Cargar fichas"
+                                            >
+                                                💎 ({{ number_format($client->chips_balance) }})
+                                            </button>
+                                        @endif
+                                        
                                         <a href="{{ route('super-admin.clients.edit', $client) }}" wire:navigate class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
                                             Editar
                                         </a>
@@ -141,4 +151,6 @@
             </div>
         </div>
     </div>
+    <!-- Modal Cargar Fichas -->
+    <livewire:super-admin.load-chips />
 </div>

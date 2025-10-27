@@ -49,7 +49,7 @@
                                 wire:model.blur="amount"
                                 placeholder="0.00"
                                 step="0.01"
-                                max="{{ $player->balance }}"
+                                {{-- max="{{ $player->balance }}" --}}
                                 class="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gray-500 text-lg"
                             >
                         </div>

@@ -157,15 +157,15 @@
                                     </div>
 
                                     @if(!$hasSufficientBalance)
-                                        <div class="mt-3 p-3 bg-red-100 dark:bg-red-900 dark:bg-opacity-20 rounded flex items-start">
-                                            <svg class="w-5 h-5 text-red-600 dark:text-red-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        <div class="mt-3 p-3 bg-yellow-100 dark:bg-yellow-900 dark:bg-opacity-20 rounded flex items-start">
+                                            <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                                             </svg>
                                             <div>
-                                                <p class="text-sm font-semibold text-red-800 dark:text-red-300">Saldo insuficiente</p>
-                                                <p class="text-xs text-red-700 dark:text-red-400 mt-1">
-                                                    El jugador no tiene saldo suficiente para este retiro. 
-                                                    No se puede aprobar. Considera rechazar la transacción.
+                                                <p class="text-sm font-semibold text-yellow-800 dark:text-yellow-300">⚠️ Advertencia: Saldo en plataforma insuficiente</p>
+                                                <p class="text-xs text-yellow-700 dark:text-yellow-400 mt-1">
+                                                    El saldo registrado en la plataforma es menor al monto solicitado. 
+                                                    <strong>Verifica manualmente</strong> si el jugador ganó en el casino antes de aprobar.
                                                 </p>
                                             </div>
                                         </div>
@@ -190,7 +190,6 @@
                                 type="button"
                                 class="px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                                 wire:loading.attr="disabled"
-                                {{ ($transaction->type === 'withdrawal' && !$hasSufficientBalance) ? 'disabled' : '' }}
                             >
                                 <span wire:loading.remove>
                                     @if($isProcessing)

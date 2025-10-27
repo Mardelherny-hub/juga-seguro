@@ -44,7 +44,7 @@ class WithdrawalRequest extends Component
                 'required',
                 'numeric',
                 'min:500',
-                'max:' . $this->player->balance
+                //'max:' . $this->player->balance
             ],
             'withdrawalMethod' => 'required|string',
             'accountHolder' => 'required|string|min:3',
@@ -55,7 +55,7 @@ class WithdrawalRequest extends Component
     protected $messages = [
         'amount.required' => 'El monto es obligatorio',
         'amount.min' => 'El monto mínimo de retiro es $500',
-        'amount.max' => 'No tienes saldo suficiente',
+        //'amount.max' => 'No tienes saldo suficiente',
         'withdrawalMethod.required' => 'Selecciona un método de retiro',
         'accountHolder.required' => 'Ingresa el titular de la cuenta',
         'accountNumber.required' => 'Ingresa el número de cuenta',

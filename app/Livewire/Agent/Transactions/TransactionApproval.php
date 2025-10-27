@@ -55,10 +55,10 @@ class TransactionApproval extends Component
     public function approve()
     {
         // Validación de saldo para retiros
-        if ($this->transaction->type === 'withdrawal' && !$this->hasSufficientBalance) {
-            $this->showToast('El jugador no tiene saldo suficiente para este retiro', 'error');
-            return;
-        }
+        //if ($this->transaction->type === 'withdrawal' && !$this->hasSufficientBalance) {
+        //    $this->showToast('El jugador no tiene saldo suficiente para este retiro', 'error');
+        //    return;
+        //}
 
         $this->isProcessing = true;
 

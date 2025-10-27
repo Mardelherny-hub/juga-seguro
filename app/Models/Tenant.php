@@ -23,6 +23,10 @@ class Tenant extends Model
         'settings',
         'bank_accounts',
         'is_active',
+        'subscription_type',
+        'monthly_fee',
+        'chips_balance',
+        'chip_price',
     ];
 
     protected $casts = [

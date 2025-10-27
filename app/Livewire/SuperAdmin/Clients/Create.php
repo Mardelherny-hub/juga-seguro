@@ -20,12 +20,20 @@ class Create extends Component
     public $logo = null;
     public $is_active = true;
 
+    // Campos de suscripción
+    public $subscription_type = 'prepaid';
+    public $monthly_fee = null;
+    public $chips_balance = 0;
+    public $chip_price = 100.00;
+
     public $showDnsInstructions = false;
     public $dnsInstructions = '';
 
     public $admin_name = '';
     public $admin_email = '';
     public $admin_password = '';
+
+
 
     protected function rules()
     {
@@ -41,6 +49,9 @@ class Create extends Component
             'admin_name' => 'required|string|max:255',
             'admin_email' => 'required|email|unique:users,email',
             'admin_password' => 'required|string|min:8',
+            'subscription_type' => 'required|in:monthly,prepaid',
+            'monthly_fee' => 'required_if:subscription_type,monthly|nullable|numeric|min:0',
+            'chip_price' => 'required_if:subscription_type,prepaid|nullable|numeric|min:0',
         ];
     }
 
@@ -72,6 +83,7 @@ class Create extends Component
 
     public function save()
     {
+        
         $this->validate();
 
         // Procesar el logo si existe
@@ -96,6 +108,10 @@ class Create extends Component
             'secondary_color' => $this->secondary_color,
             'logo_url' => $logoUrl,
             'is_active' => $this->is_active,
+            'subscription_type' => $this->subscription_type,
+            'monthly_fee' => $this->subscription_type === 'monthly' ? $this->monthly_fee : null,
+            'chips_balance' => $this->subscription_type === 'prepaid' ? $this->chips_balance : 0,
+            'chip_price' => $this->subscription_type === 'prepaid' ? $this->chip_price : 100,
         ]);
 
         // ← CREAR USUARIO ADMINISTRADOR DEL CLIENTE

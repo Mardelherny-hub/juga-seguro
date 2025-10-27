@@ -10,6 +10,8 @@ class Index extends Component
 {
     use WithPagination;
 
+    protected $listeners = ['chipsLoaded' => '$refresh'];
+
     public $search = '';
     public $statusFilter = 'all';
 
@@ -46,6 +48,11 @@ class Index extends Component
         $tenant->delete();
 
         session()->flash('message', "Cliente {$tenantName} eliminado exitosamente.");
+    }
+
+    public function openLoadChipsModal($tenantId)
+    {
+        $this->dispatch('openLoadChipsModal', tenantId: $tenantId);
     }
 
     public function render()

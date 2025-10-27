@@ -7,9 +7,17 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\ChipsService;
 
 class TransactionService
 {
+    protected $chipsService;
+
+    public function __construct(ChipsService $chipsService)
+    {
+        $this->chipsService = $chipsService;
+    }
+
     /**
      * Procesar depósito
      */
@@ -77,9 +85,9 @@ class TransactionService
                 throw new \InvalidArgumentException('El monto debe ser mayor a cero');
             }
 
-            if ($player->balance < $amount) {
-                throw new \InvalidArgumentException('Saldo insuficiente');
-            }
+            //if ($player->balance < $amount) {
+            //    throw new \InvalidArgumentException('Saldo insuficiente');
+            //}
 
             // Crear transacción
             $transaction = Transaction::create([
@@ -115,13 +123,25 @@ class TransactionService
                 throw new \InvalidArgumentException('La transacción ya fue procesada');
             }
 
+            if ($transaction->type === 'deposit') {
+                $tenant = $transaction->player->tenant;
+                
+                // Verificar si puede aprobar
+                if (!$this->chipsService->canApproveTransactions($tenant)) {
+                    throw new \InvalidArgumentException('No tienes fichas disponibles para aprobar depósitos. Contacta al Super Admin.');
+                }
+                
+                // Consumir ficha (solo si es prepaid)
+                $this->chipsService->consumeChip($tenant, $transaction);
+            }
+
             // Actualizar saldo según tipo
             if ($transaction->type === 'deposit') {
                 $player->increment('balance', $transaction->amount);
             } elseif ($transaction->type === 'withdrawal') {
-                if ($player->balance < $transaction->amount) {
-                    throw new \InvalidArgumentException('Saldo insuficiente');
-                }
+                //if ($player->balance < $transaction->amount) {
+                //    throw new \InvalidArgumentException('Saldo insuficiente');
+                //}
                 $player->decrement('balance', $transaction->amount);
             }
 
