@@ -15,7 +15,7 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 
                 <!-- Saldo -->
-                <div>
+                {{-- <div>
                     <p class="text-gray-400 text-sm mb-2">Tu saldo actual</p>
                     <p class="text-5xl font-bold text-white mb-4">${{ number_format($balance, 2) }}</p>
                     
@@ -27,7 +27,7 @@
                             <span>{{ $pendingTransactions }} {{ $pendingTransactions == 1 ? 'transacción pendiente' : 'transacciones pendientes' }}</span>
                         </div>
                     @endif
-                </div>
+                </div> --}}
 
                 <!-- Botones de Acción -->
                 <div class="flex flex-col sm:flex-row gap-4">
