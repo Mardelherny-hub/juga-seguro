@@ -11,7 +11,7 @@ class WithdrawalRequest extends Component
 
     public $isOpen = false;
     public $amount = '';
-    public $withdrawalMethod = 'chinchontop'; // Default
+    public $withdrawalMethod = 'bank_transfer'; // Default
     public $accountHolder = '';
     public $accountNumber = '';
     

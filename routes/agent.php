@@ -29,4 +29,8 @@ Route::middleware(['auth', 'tenant.identify'])->group(function () {
 
     // Gestión de Bonos
     Route::get('/bonuses', fn() => view('agent.bonuses'))->name('bonuses');
+
+    // Gestión de Cuentas Bancarias
+    Route::view('/dashboard/bank-accounts', 'agent.bank-accounts.index')
+    ->name('dashboard.bank-accounts');
 }); 

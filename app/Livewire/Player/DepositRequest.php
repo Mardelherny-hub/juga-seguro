@@ -26,11 +26,19 @@ class DepositRequest extends Component
     public function mount()
     {
         $this->player = auth()->guard('player')->user();
-        $this->tenant = $this->player->tenant;
+        $this->tenant = $this->player->tenant->load('activeBankAccount');
     }
 
     public function open()
     {
+        // Verificar que exista cuenta bancaria activa
+        $activeBankAccount = $this->tenant->activeBankAccount;
+        
+        if (!$activeBankAccount) {
+            $this->showToast('La carga de saldo no está disponible en este momento. Contacta a soporte.', 'error');
+            return;
+        }
+        
         $this->isOpen = true;
     }
 

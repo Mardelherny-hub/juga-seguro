@@ -39,9 +39,19 @@
                             </svg>
                             <div class="text-sm text-blue-200">
                                 <p class="font-semibold mb-1">Realiza la transferencia a:</p>
-                                <p class="text-blue-100">🏦 <strong>TITULAR:</strong> {{ $tenant->bank_account_holder ?? 'Alexander Monico Duran' }}</p>
-                                <p class="text-blue-100">🔗 <strong>ALIAS:</strong> {{ $tenant->bank_alias ?? 'laucha2.claropay' }}</p>
-                                <p class="text-xs text-blue-300 mt-2">⚠️ El ALIAS puede cambiar con el tiempo</p>
+                                @if($tenant->activeBankAccount)
+                                <p class="text-blue-100">🏦 <strong>TITULAR:</strong> {{ $tenant->activeBankAccount->account_holder }}</p>
+                                <p class="text-blue-100">🔗 <strong>ALIAS:</strong> {{ $tenant->activeBankAccount->alias ?? $tenant->activeBankAccount->cbu ?? $tenant->activeBankAccount->cvu }}</p>
+                                @if($tenant->activeBankAccount->bank_name)
+                                    <p class="text-blue-100">🏛️ <strong>BANCO:</strong> {{ $tenant->activeBankAccount->bank_name }}</p>
+                                @endif
+                                @if($tenant->activeBankAccount->notes)
+                                    <p class="text-xs text-blue-300 mt-2">⚠️ {{ $tenant->activeBankAccount->notes }}</p>
+                                @endif
+                            @else
+                                <p class="text-red-200">⚠️ No hay cuenta configurada. Contacta a soporte.</p>
+                            @endif
+<p class="text-xs text-blue-300 mt-2">⚠️ El ALIAS puede cambiar con el tiempo</p>
                             </div>
                         </div>
                     </div>

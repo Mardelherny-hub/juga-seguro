@@ -86,4 +86,14 @@ class Tenant extends Model
         
         return 'https://' . $this->domain . '.' . config('app.domain');
     }
+
+    public function bankAccounts()
+    {
+        return $this->hasMany(BankAccount::class);
+    }
+
+    public function activeBankAccount()
+    {
+        return $this->hasOne(BankAccount::class)->where('is_active', true)->where('status', 'active');
+    }
 }
