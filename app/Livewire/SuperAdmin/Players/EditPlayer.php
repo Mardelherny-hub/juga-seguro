@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Agent\Players;
+namespace App\Livewire\SuperAdmin\Players;
 
 use App\Models\Player;
 use Livewire\Component;
@@ -22,7 +22,7 @@ class EditPlayer extends Component
     public $phone = '';
     public $username = '';
     
-    // NUEVO: Campos de contraseña
+    // Campos de contraseña
     public $password = '';
     public $password_confirmation = '';
     
@@ -41,7 +41,7 @@ class EditPlayer extends Component
         $this->email = $this->player->email;
         $this->phone = $this->player->phone;
         
-        // NUEVO: Resetear campos de contraseña
+        // Resetear campos de contraseña
         $this->password = '';
         $this->password_confirmation = '';
         
@@ -84,7 +84,7 @@ class EditPlayer extends Component
                     ->where('tenant_id', $tenantId)
                     ->ignore($this->playerId)
             ],
-            'password' => 'nullable|min:8|confirmed',  // NUEVO
+            'password' => 'nullable|min:8|confirmed',
         ], [
             'name.required' => 'El nombre es obligatorio',
             'name.min' => 'El nombre debe tener al menos 3 caracteres',
@@ -97,8 +97,8 @@ class EditPlayer extends Component
             'email.unique' => 'Este email ya está registrado',
             'phone.required' => 'El teléfono es obligatorio',
             'phone.unique' => 'Este teléfono ya está registrado',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres',  // NUEVO
-            'password.confirmed' => 'Las contraseñas no coinciden',  // NUEVO
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
+            'password.confirmed' => 'Las contraseñas no coinciden',
         ]);
 
         // Preparar datos para actualizar
@@ -109,7 +109,7 @@ class EditPlayer extends Component
             'phone' => $this->phone,
         ];
 
-        // NUEVO: Solo agregar password si se ingresó
+        // Solo agregar password si se ingresó
         if (!empty($this->password)) {
             $updateData['password'] = Hash::make($this->password);
         }
@@ -132,9 +132,9 @@ class EditPlayer extends Component
             $changes['phone'] = ['before' => $this->originalData['phone'], 'after' => $this->phone];
         }
         
-        // NUEVO: Registrar cambio de contraseña
+        // Registrar cambio de contraseña
         if (!empty($this->password)) {
-            $changes['password'] = 'Contraseña actualizada';
+            $changes['password'] = 'Contraseña actualizada por Super Admin';
         }
 
         // Registrar en activity log solo si hubo cambios
@@ -143,16 +143,16 @@ class EditPlayer extends Component
                 ->performedOn($this->player)
                 ->causedBy(auth()->user())
                 ->withProperties([
-                    'changes' => $changes
+                    'changes' => $changes,
+                    'updated_by' => 'super_admin'
                 ])
-                ->log('Información del jugador actualizada');
+                ->log('Información del jugador actualizada por Super Admin');
         }
 
         $this->showToast('Información actualizada correctamente', 'success');
 
         $this->closeModal();
         $this->dispatch('playerUpdated');
-        return redirect()->route('dashboard.players');
     }
 
     public function closeModal()
@@ -165,6 +165,6 @@ class EditPlayer extends Component
 
     public function render()
     {
-        return view('livewire.agent.players.edit-player');
+        return view('livewire.super-admin.players.edit-player');
     }
 }

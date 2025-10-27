@@ -8,12 +8,17 @@
 
                 {{-- Modal --}}
                 <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-                    {{-- Header --}}
-                    <div class="bg-blue-600 px-6 py-4">
+                    {{-- Header - Color diferente para Super Admin --}}
+                    <div class="bg-red-600 px-6 py-4">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-white">
-                                Editar Información del Jugador
-                            </h3>
+                            <div>
+                                <h3 class="text-lg font-semibold text-white">
+                                    Editar Jugador (Super Admin)
+                                </h3>
+                                <p class="text-sm text-red-100">
+                                    Cliente: {{ $player->tenant->name }}
+                                </p>
+                            </div>
                             <button wire:click="closeModal" class="text-white hover:text-gray-200">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -41,7 +46,7 @@
                                         <input 
                                             type="text" 
                                             wire:model="name"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('name') border-red-500 @enderror"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent @error('name') border-red-500 @enderror"
                                             placeholder="Ej: Juan Pérez"
                                         >
                                         @error('name')
@@ -57,7 +62,7 @@
                                         <input 
                                             type="text" 
                                             wire:model="username"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('username') border-red-500 @enderror"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent @error('username') border-red-500 @enderror"
                                             placeholder="Ej: juanperez"
                                         >
                                         @error('username')
@@ -73,7 +78,7 @@
                                         <input 
                                             type="email" 
                                             wire:model="email"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('email') border-red-500 @enderror"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent @error('email') border-red-500 @enderror"
                                             placeholder="ejemplo@correo.com"
                                         >
                                         @error('email')
@@ -89,7 +94,7 @@
                                         <input 
                                             type="text" 
                                             wire:model="phone"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('phone') border-red-500 @enderror"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent @error('phone') border-red-500 @enderror"
                                             placeholder="Ej: +54 9 11 1234-5678"
                                         >
                                         @error('phone')
@@ -99,7 +104,7 @@
                                 </div>
                             </div>
 
-                            {{-- Sección: Cambiar Contraseña (NUEVO) --}}
+                            {{-- Sección: Cambiar Contraseña --}}
                             <div>
                                 <h4 class="text-sm font-semibold text-gray-700 mb-4 border-b pb-2">
                                     Cambiar Contraseña (Opcional)
@@ -123,7 +128,7 @@
                                         <input 
                                             type="password" 
                                             wire:model="password"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('password') border-red-500 @enderror"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent @error('password') border-red-500 @enderror"
                                             placeholder="Mínimo 8 caracteres"
                                         >
                                         @error('password')
@@ -139,20 +144,27 @@
                                         <input 
                                             type="password" 
                                             wire:model="password_confirmation"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                                             placeholder="Repetir contraseña"
                                         >
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Información de Solo Lectura --}}
+                            {{-- Información de Solo Lectura + Tenant --}}
                             <div>
                                 <h4 class="text-sm font-semibold text-gray-700 mb-4 border-b pb-2">
                                     Información de la Cuenta
                                 </h4>
                                 
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 rounded-lg p-4">
+                                    {{-- NUEVO: Info del Tenant --}}
+                                    <div class="col-span-2">
+                                        <p class="text-xs text-gray-600">Cliente/Tenant</p>
+                                        <p class="text-sm font-semibold text-gray-900">{{ $player->tenant->name }}</p>
+                                        <p class="text-xs text-gray-500">{{ $player->tenant->domain }}</p>
+                                    </div>
+                                    
                                     <div>
                                         <p class="text-xs text-gray-600">Código de Referido</p>
                                         <p class="text-sm font-semibold text-gray-900">{{ $player->referral_code }}</p>
@@ -186,7 +198,7 @@
                             </button>
                             <button 
                                 type="submit"
-                                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                             >
                                 Guardar Cambios
                             </button>

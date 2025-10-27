@@ -4,6 +4,7 @@ use App\Livewire\SuperAdmin\Dashboard as SuperAdminDashboard;
 use App\Livewire\SuperAdmin\Clients\Index as ClientsIndex;
 use App\Livewire\SuperAdmin\Clients\Create as ClientsCreate;
 use App\Livewire\SuperAdmin\Clients\Edit as ClientsEdit;
+use App\Livewire\SuperAdmin\Clients\Show as ClientsShow;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('super-admin')
@@ -19,6 +20,7 @@ Route::prefix('super-admin')
         Route::prefix('clients')->name('clients.')->group(function () {
             Route::get('/', ClientsIndex::class)->name('index');
             Route::get('/create', ClientsCreate::class)->name('create');
+            Route::get('/{tenant}', ClientsShow::class)->name('show');  // NUEVO
             Route::get('/{tenant}/edit', ClientsEdit::class)->name('edit');
         });
 
