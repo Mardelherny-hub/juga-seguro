@@ -177,7 +177,7 @@ class Register extends Component
         $player = Player::create([
             'tenant_id' => $this->tenant->id,
             'name' => $this->name,
-            'email' => $this->email,  // ELIMINAR
+            //'email' => $this->email,  // ELIMINAR
             'username' => $this->username,  // AGREGAR
             'phone' => $this->phone,
             'password' => Hash::make($this->password),
