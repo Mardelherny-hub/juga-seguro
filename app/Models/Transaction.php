@@ -121,4 +121,29 @@ class Transaction extends Model
     {
         return $this->status === 'pending';
     }
+
+    public function isAccountCreation(): bool
+    {
+        return $this->type === 'account_creation';
+    }
+
+    public function isAccountUnlock(): bool
+    {
+        return $this->type === 'account_unlock';
+    }
+
+    public function isPasswordReset(): bool
+    {
+        return $this->type === 'password_reset';
+    }
+
+    public function isAccountRequest(): bool
+    {
+        return in_array($this->type, ['account_creation', 'account_unlock', 'password_reset']);
+    }
+
+    public function requiresCredentials(): bool
+    {
+        return in_array($this->type, ['account_creation', 'password_reset']);
+    }
 }

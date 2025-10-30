@@ -72,35 +72,94 @@ class TransactionRejection extends Component
 
     public function reject()
     {
-        $this->validate();
+        if (!$this->transaction) {
+            return;
+        }
 
+        $this->validate();
         $this->isProcessing = true;
 
         try {
-            $transactionService = app(TransactionService::class);
-            $transactionService->rejectTransaction(
-                $this->transaction, 
-                auth()->user(),
-                $this->rejectionReason
-            );
+            DB::transaction(function () {
+                $user = auth()->user();
+                
+                $this->transaction->update([
+                    'status' => 'rejected',
+                    'processed_by' => $user->id,
+                    'processed_at' => now(),
+                    'notes' => $this->reason,
+                ]);
 
-            $this->showToast('Transacción rechazada correctamente', 'success');
+                // Notificar al jugador sobre el rechazo
+                if ($this->transaction->isAccountRequest()) {
+                    $this->notifyPlayer($this->transaction, 'rejected');
+                }
 
-            // Refrescar componentes
-            $this->dispatch('refreshPending');
+                activity()
+                    ->performedOn($this->transaction)
+                    ->causedBy($user)
+                    ->withProperties([
+                        'reason' => $this->reason,
+                        'type' => $this->transaction->type
+                    ])
+                    ->log('Solicitud rechazada: ' . $this->getTypeLabel());
+            });
+
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => $this->getTypeLabel() . ' rechazada correctamente'
+            ]);
+            
             $this->dispatch('transactionProcessed');
-
-            $this->closeModal();
-
-            $this->dispatch('$refresh')->to('agent.transactions.pending-transactions');
-            $this->dispatch('$refresh')->to('agent.transactions.transaction-history');
-
+            $this->showModal = false;
+            $this->reset(['transaction', 'reason']);
 
         } catch (\Exception $e) {
-            $this->showToast('Error al rechazar: ' . $e->getMessage(), 'error');
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Error: ' . $e->getMessage()
+            ]);
         } finally {
             $this->isProcessing = false;
         }
+    }
+
+    private function getTypeLabel()
+    {
+        return match($this->transaction->type) {
+            'deposit' => 'Depósito',
+            'withdrawal' => 'Retiro',
+            'account_creation' => 'Creación de usuario',
+            'account_unlock' => 'Desbloqueo de usuario',
+            'password_reset' => 'Cambio de contraseña',
+            default => 'Transacción'
+        };
+    }
+
+    private function notifyPlayer($transaction, $status)
+    {
+        $messageService = app(\App\Services\MessageService::class);
+        
+        $messages = [
+            'account_creation' => [
+                'rejected' => '❌ Tu solicitud de creación de usuario fue rechazada. Motivo: ' . $this->reason
+            ],
+            'account_unlock' => [
+                'rejected' => '❌ Tu solicitud de desbloqueo fue rechazada. Motivo: ' . $this->reason
+            ],
+            'password_reset' => [
+                'rejected' => '❌ Tu solicitud de cambio de contraseña fue rechazada. Motivo: ' . $this->reason
+            ],
+        ];
+
+        $message = $messages[$transaction->type][$status] ?? 'Tu solicitud fue rechazada.';
+        
+        $messageService->sendSystemMessage(
+            $transaction->player,
+            $message,
+            'account',
+            $transaction
+        );
     }
 
     public function render()

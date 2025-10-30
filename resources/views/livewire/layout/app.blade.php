@@ -40,10 +40,10 @@
                                     {{ __('Dashboard') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('players.index')" :active="request()->routeIs('players.*')" wire:navigate>
-                                    {{ __('Jugadoreeeeeeeeeees') }}
+                                    {{ __('Jugadores') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')" wire:navigate>
-                                    {{ __('Transaccioneeeeeeeeees') }}
+                                    {{ __('Transacciones') }}
                                 </x-nav-link>
                             </div>
                         </div>

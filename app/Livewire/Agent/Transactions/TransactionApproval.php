@@ -54,38 +54,125 @@ class TransactionApproval extends Component
 
     public function approve()
     {
-        // Validación de saldo para retiros
-        //if ($this->transaction->type === 'withdrawal' && !$this->hasSufficientBalance) {
-        //    $this->showToast('El jugador no tiene saldo suficiente para este retiro', 'error');
-        //    return;
-        //}
+        if (!$this->transaction) {
+            return;
+        }
 
+        $this->validate();
         $this->isProcessing = true;
 
         try {
-            $transactionService = app(TransactionService::class);
-            $transactionService->approveTransaction($this->transaction, auth()->user());
+            DB::transaction(function () {
+                $user = auth()->user();
+                
+                // Para solicitudes de cuenta, no modificar el saldo
+                if ($this->transaction->isAccountRequest()) {
+                    $this->transaction->update([
+                        'status' => 'completed',
+                        'processed_by' => $user->id,
+                        'processed_at' => now(),
+                        'notes' => $this->notes ?: $this->transaction->notes,
+                    ]);
+                    
+                    // Crear notificación para el jugador
+                    $this->notifyPlayer($this->transaction, 'approved');
+                    
+                    // Log de actividad
+                    activity()
+                        ->performedOn($this->transaction)
+                        ->causedBy($user)
+                        ->withProperties([
+                            'type' => $this->transaction->type,
+                            'player_id' => $this->transaction->player_id
+                        ])
+                        ->log('Solicitud de ' . $this->getTypeLabel() . ' aprobada');
+                        
+                } else {
+                    // Para depósitos y retiros, usar el servicio existente
+                    $service = app(TransactionService::class);
+                    
+                    if ($this->transaction->isDeposit()) {
+                        $service->processDeposit(
+                            $this->transaction->player,
+                            $this->transaction->amount,
+                            $this->transaction->proof_url,
+                            $user
+                        );
+                    } elseif ($this->transaction->isWithdrawal()) {
+                        $service->processWithdrawal(
+                            $this->transaction->player,
+                            $this->transaction->amount,
+                            $user
+                        );
+                    }
+                    
+                    $this->transaction->update([
+                        'status' => 'completed',
+                        'processed_by' => $user->id,
+                        'processed_at' => now(),
+                        'notes' => $this->notes ?: $this->transaction->notes,
+                    ]);
+                }
+            });
 
-            $this->showToast('Transacción aprobada correctamente', 'success');
-
-            // Refrescar componentes
-            $this->dispatch('refreshPending');
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => $this->getTypeLabel() . ' aprobada correctamente'
+            ]);
+            
             $this->dispatch('transactionProcessed');
-            $this->dispatch('balanceUpdated'); // NUEVO - para BalanceDisplay del Player
-            $this->dispatch('playerBalanceChanged', playerId: $this->transaction->player_id); // NUEVO - para actualizar player específico
-
-            $this->closeModal();
-
-            // Después de los dispatch exitosos, agregar:
-            $this->dispatch('$refresh')->to('agent.transactions.pending-transactions');
-            $this->dispatch('$refresh')->to('agent.transactions.transaction-history');
-
+            $this->showModal = false;
+            $this->reset(['transaction', 'notes']);
 
         } catch (\Exception $e) {
-            $this->showToast('Error al aprobar: ' . $e->getMessage(), 'error');
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Error: ' . $e->getMessage()
+            ]);
         } finally {
             $this->isProcessing = false;
         }
+    }
+
+    private function getTypeLabel()
+    {
+        return match($this->transaction->type) {
+            'deposit' => 'Depósito',
+            'withdrawal' => 'Retiro',
+            'account_creation' => 'Creación de usuario',
+            'account_unlock' => 'Desbloqueo de usuario',
+            'password_reset' => 'Cambio de contraseña',
+            default => 'Transacción'
+        };
+    }
+
+    private function notifyPlayer($transaction, $status)
+    {
+        $messageService = app(\App\Services\MessageService::class);
+        
+        $messages = [
+            'account_creation' => [
+                'approved' => '✅ Tu solicitud de creación de usuario fue aprobada. ' . ($this->notes ?: 'Consulta con el administrador tus credenciales.'),
+                'rejected' => '❌ Tu solicitud de creación de usuario fue rechazada. Motivo: ' . $this->notes
+            ],
+            'account_unlock' => [
+                'approved' => '✅ Tu usuario fue desbloqueado. Ya puedes ingresar a la plataforma.',
+                'rejected' => '❌ Tu solicitud de desbloqueo fue rechazada. Motivo: ' . $this->notes
+            ],
+            'password_reset' => [
+                'approved' => '✅ Tu contraseña fue cambiada a: bet123. Guárdala en un lugar seguro.',
+                'rejected' => '❌ Tu solicitud de cambio de contraseña fue rechazada. Motivo: ' . $this->notes
+            ],
+        ];
+
+        $message = $messages[$transaction->type][$status] ?? 'Tu solicitud fue procesada.';
+        
+        $messageService->sendSystemMessage(
+            $transaction->player,
+            $message,
+            'account',
+            $transaction
+        );
     }
 
     public function render()

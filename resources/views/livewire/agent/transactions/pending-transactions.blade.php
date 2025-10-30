@@ -49,26 +49,52 @@
                             {{-- Info Izquierda --}}
                             <div class="flex-1">
                                 <div class="flex items-center space-x-3 mb-2">
-                                    {{-- Tipo --}}
-                                    @if($transaction->type === 'deposit')
-                                        <span class="flex items-center text-green-600 font-semibold">
-                                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                                            </svg>
-                                            Depósito
-                                        </span>
-                                    @else
-                                        <span class="flex items-center text-red-600 font-semibold">
-                                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                                            </svg>
-                                            Retiro
-                                        </span>
-                                    @endif
-
+                                    {{-- Tipo con badge --}}
+                                    <div>
+                                        @if($transaction->type === 'deposit')
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                                                </svg>
+                                                Depósito
+                                            </span>
+                                        @elseif($transaction->type === 'withdrawal')
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                                                </svg>
+                                                Retiro
+                                            </span>
+                                        @elseif($transaction->type === 'account_creation')
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                                                </svg>
+                                                Crear Usuario
+                                            </span>
+                                        @elseif($transaction->type === 'account_unlock')
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                                                </svg>
+                                                Desbloquear Usuario
+                                            </span>
+                                        @elseif($transaction->type === 'password_reset')
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                                                </svg>
+                                                Cambiar Contraseña
+                                            </span>
+                                        @endif
+                                    </div>
                                     {{-- Monto --}}
-                                    <span class="text-2xl font-bold text-gray-900 dark:text-white">
-                                        ${{ number_format($transaction->amount, 2) }}
+                                    <span class="text-sm font-bold text-gray-900 dark:text-white">
+                                        @if($transaction->isAccountRequest())
+                                            <span class="text-gray-400">-</span>
+                                        @else
+                                            ${{ number_format($transaction->amount, 2) }}
+                                        @endif
                                     </span>
 
                                     {{-- ID --}}

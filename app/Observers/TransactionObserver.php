@@ -53,8 +53,34 @@ class TransactionObserver
             }
 
             if ($transaction->status === 'rejected') {
+                // Extraer el motivo del campo notes
                 $reason = $transaction->notes ?? 'No se especificó un motivo';
-                $this->messageService->notifyDepositRejected($transaction, $reason);
+                
+                // Si notes contiene el formato "RECHAZADO: motivo", extraer solo el motivo
+                if (str_contains($reason, 'RECHAZADO: ')) {
+                    $reason = str_replace('RECHAZADO: ', '', $reason);
+                    // Si tiene el formato antiguo con pipes, tomar la última parte
+                    if (str_contains($reason, ' | ')) {
+                        $parts = explode(' | ', $reason);
+                        $reason = end($parts);
+                        if (str_starts_with($reason, 'RECHAZADO: ')) {
+                            $reason = str_replace('RECHAZADO: ', '', $reason);
+                        }
+                    }
+                }
+                
+                $typeLabel = $transaction->type === 'deposit' ? 'depósito' : 
+                            ($transaction->type === 'withdrawal' ? 'retiro' : 
+                            ($transaction->type === 'account_creation' ? 'creación de usuario' :
+                            ($transaction->type === 'account_unlock' ? 'desbloqueo' :
+                            ($transaction->type === 'password_reset' ? 'cambio de contraseña' : 'solicitud'))));
+                
+                if ($transaction->type === 'deposit') {
+                    $this->messageService->notifyDepositRejected($transaction, $reason);
+                } elseif ($transaction->type === 'withdrawal') {
+                    $this->messageService->notifyWithdrawalRejected($transaction, $reason);
+                }
+                // Para los tipos de cuenta, ya se maneja en TransactionApproval/Rejection
             }
         }
 
@@ -65,8 +91,34 @@ class TransactionObserver
             }
 
             if ($transaction->status === 'rejected') {
+                // Extraer el motivo del campo notes
                 $reason = $transaction->notes ?? 'No se especificó un motivo';
-                $this->messageService->notifyWithdrawalRejected($transaction, $reason);
+                
+                // Si notes contiene el formato "RECHAZADO: motivo", extraer solo el motivo
+                if (str_contains($reason, 'RECHAZADO: ')) {
+                    $reason = str_replace('RECHAZADO: ', '', $reason);
+                    // Si tiene el formato antiguo con pipes, tomar la última parte
+                    if (str_contains($reason, ' | ')) {
+                        $parts = explode(' | ', $reason);
+                        $reason = end($parts);
+                        if (str_starts_with($reason, 'RECHAZADO: ')) {
+                            $reason = str_replace('RECHAZADO: ', '', $reason);
+                        }
+                    }
+                }
+                
+                $typeLabel = $transaction->type === 'deposit' ? 'depósito' : 
+                            ($transaction->type === 'withdrawal' ? 'retiro' : 
+                            ($transaction->type === 'account_creation' ? 'creación de usuario' :
+                            ($transaction->type === 'account_unlock' ? 'desbloqueo' :
+                            ($transaction->type === 'password_reset' ? 'cambio de contraseña' : 'solicitud'))));
+                
+                if ($transaction->type === 'deposit') {
+                    $this->messageService->notifyDepositRejected($transaction, $reason);
+                } elseif ($transaction->type === 'withdrawal') {
+                    $this->messageService->notifyWithdrawalRejected($transaction, $reason);
+                }
+                // Para los tipos de cuenta, ya se maneja en TransactionApproval/Rejection
             }
         }
     }

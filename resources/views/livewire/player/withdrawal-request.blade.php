@@ -154,7 +154,8 @@
                             <!-- Info -->
                             <div class="bg-blue-900/30 border border-blue-600/50 rounded-lg p-3">
                                 <p class="text-xs text-blue-200">
-                                    ℹ️ Los retiros se procesan en 24-48 horas hábiles
+                                    ℹ️ Los retiros serán realizados lo antes posible.<br>
+                                    Asegúrate de que la información de la cuenta sea correcta para evitar demoras.
                                 </p>
                             </div>
 
