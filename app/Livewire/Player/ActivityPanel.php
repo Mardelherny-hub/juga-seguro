@@ -45,6 +45,7 @@ class ActivityPanel extends Component
                 'status' => $transaction->status,
                 'transaction_type' => $transaction->type,
                 'amount' => $transaction->amount,
+                'notes' => $transaction->notes,
                 'time' => $transaction->updated_at->diffForHumans(),
                 'is_new' => $transaction->updated_at->isAfter(now()->subSeconds(10))
             ]);

@@ -16,7 +16,7 @@ Route::middleware(['auth', 'tenant.identify'])->group(function () {
     Route::view('/dashboard/players', 'agent.players.index')->name('dashboard.players');
 
     //profile (temporal - reestructurar en próxima sesión)
-    Route::view('/profile', 'profile')->name('profile');
+    Route::view('/profile', 'agent.profile')->name('profile');
 
 
     // Gestión de Transacciones

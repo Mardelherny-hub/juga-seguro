@@ -11,110 +11,82 @@
         </h1>
 
         <!-- Card de Saldo Principal -->
-        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 shadow-2xl">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                
-                <!-- Saldo -->
-                {{-- <div>
-                    <p class="text-gray-400 text-sm mb-2">Tu saldo actual</p>
-                    <p class="text-5xl font-bold text-white mb-4">${{ number_format($balance, 2) }}</p>
-                    
-                    @if($pendingTransactions > 0)
-                        <div class="flex items-center gap-2 text-yellow-400 text-sm">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>{{ $pendingTransactions }} {{ $pendingTransactions == 1 ? 'transacción pendiente' : 'transacciones pendientes' }}</span>
-                        </div>
-                    @endif
-                </div> --}}
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700 shadow-2xl">
+    
+    <!-- BOTÓN CASINO DESTACADO -->
+    @if($tenant->casino_url)
+        <button 
+            wire:click="$dispatch('openCasinoModal')"                            
+            class="w-full mb-4 px-6 py-3.5 rounded-xl font-semibold text-white text-sm flex items-center justify-center gap-2 transition-all hover:opacity-90 shadow-lg"
+            style="background: linear-gradient(135deg, {{ $tenant->primary_color }} 0%, {{ $tenant->secondary_color }} 100%);"
+        >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+            Link al casino ¡CLICK AQUÍ!
+        </button>
+    @endif
 
-                <!-- Botones de Acción -->
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <button wire:click="$dispatch('openDepositModal')" 
-                            class="px-8 py-4 rounded-xl font-bold text-white text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3"
-                            style="background-color: {{ $tenant->primary_color }}">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+    <!-- GRID 2x2 DE ACCIONES PRINCIPALES -->
+    <div class="grid grid-cols-2 gap-3 mb-4">
+        <!-- Cargar Saldo -->
+        <button 
+            wire:click="$dispatch('openDepositModal')" 
+            class="flex flex-col items-center justify-center gap-2 p-5 bg-gray-700/50 rounded-xl transition-all hover:bg-gray-700 text-white"
+        >
+            <div class="text-3xl">💰</div>
+            <span class="text-xs font-medium text-center">Cargar Saldo</span>
+        </button>
+
+        <!-- Retirar Fondos -->
+        <button 
+            wire:click="$dispatch('openWithdrawalModal')" 
+            class="flex flex-col items-center justify-center gap-2 p-5 bg-gray-700/50 rounded-xl transition-all hover:bg-gray-700 text-white"
+        >
+            <div class="text-3xl">🏆</div>
+            <span class="text-xs font-medium text-center">Retirar Fondos</span>
+        </button>
+
+        <!-- Botones del componente player-account-actions (se integran en el grid) -->
+        @livewire('player.player-account-actions', ['player' => $player])
+    </div>
+
+    <!-- MENSAJE SI ESTÁ BLOQUEADO -->
+    @if($player->isBlocked())
+        <div class="mb-4">
+            <div class="bg-red-900/30 border-2 border-red-600 rounded-xl p-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                         </svg>
-                        Cargar Saldo
-                    </button>
-                    
-                    <button wire:click="$dispatch('openWithdrawalModal')" 
-                            class="px-8 py-4 bg-gray-700 rounded-xl font-bold text-white text-lg hover:bg-gray-600 transition-all shadow-lg flex items-center justify-center gap-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        Retirar Fondos
-                    </button>
-
-                     {{-- NUEVO: Botón Configurar Cuentas --}}
-                    {{-- <a href="{{ route('player.withdrawal-accounts') }}" wire:navigate
-                        class="px-8 py-4 bg-blue-600 rounded-xl font-bold text-white text-lg hover:bg-blue-700 transition-all shadow-lg flex items-center justify-center gap-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                        </svg>
-                        Mis Cuentas
-                    </a> --}}
-                    
-
-                    {{-- SI ESTÁ BLOQUEADO - Mostrar mensaje y botón --}}
-                    @if($player->isBlocked())
-                        <div class="mb-6">
-                            <div class="bg-red-900/30 border-2 border-red-600 rounded-xl p-6">
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                                        </svg>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h3 class="text-xl font-bold text-red-200 mb-2">Cuenta Bloqueada</h3>
-                                        <p class="text-red-300 mb-4">
-                                            Tu cuenta ha sido bloqueada. Para más información o solicitar el desbloqueo, contacta con soporte.
-                                        </p>
-                                        @livewire('player.request-unblock')
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    {{-- Botón WhatsApp --}}
-                    @if($tenant->whatsapp_number)
-                        <a 
-                            href="{{ $tenant->whatsapp_link }}?text=Hola, soy {{ $player->name }} (Usuario: {{ $player->username }}). Necesito ayuda con:"
-                            target="_blank"
-                            class="px-6 py-4 bg-green-600 rounded-xl font-bold text-white text-lg hover:bg-green-700 transition-all shadow-lg flex items-center justify-center gap-3"
-                        >
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                            </svg>
-                            Contactar por WhatsApp
-                        </a>
-                    @endif
-
-                    {{-- Botón Ir al Casino --}}
-                    @if($tenant->casino_url)
-                        <button 
-                            wire:click="$dispatch('openCasinoModal')"                            
-                            class="px-6 py-4 rounded-xl font-bold text-white text-lg hover:shadow-xl transition-all shadow-lg flex items-center justify-center gap-3"
-                            style="background: linear-gradient(135deg, {{ $tenant->primary_color }} 0%, {{ $tenant->secondary_color }} 100%);"
-                        >
-                            🎰 Ir al Casino
-                        </button>
-                    @endif
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-red-200 mb-1">Cuenta Bloqueada</h3>
+                        <p class="text-red-300 text-sm mb-3">
+                            Tu cuenta ha sido bloqueada. Para más información o solicitar el desbloqueo, contacta con soporte.
+                        </p>
+                        @livewire('player.request-unblock')
+                    </div>
                 </div>
-
-                
-
-            </div>
-            {{-- NUEVA FILA 2: Botones de gestión de cuenta del casino --}}
-            <div class="flex flex-col sm:flex-row gap-4 mt-4">                
-                {{-- NUEVOS BOTONES DE GESTIÓN DE CUENTA --}}
-                    @livewire('player.player-account-actions', ['player' => $player])
             </div>
         </div>
+    @endif
+
+    <!-- BOTÓN WHATSAPP -->
+    @if($tenant->whatsapp_number)
+        <a 
+            href="{{ $tenant->whatsapp_link }}?text=Hola, soy {{ $player->name }} (Usuario: {{ $player->username }}). Necesito ayuda con:"
+            target="_blank"
+            class="w-full px-6 py-3.5 bg-green-600 rounded-xl font-semibold text-white text-sm hover:bg-green-700 transition-all shadow-lg flex items-center justify-center gap-2"
+        >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Contactar por WhatsApp
+        </a>
+    @endif
+</div>
     </div>
 
     <!-- Grid de Cards -->

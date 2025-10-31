@@ -77,16 +77,42 @@
                                 <p class="text-sm text-gray-600 dark:text-gray-300">
                                     @if($activity['status'] === 'pending')
                                         Solicitó 
+                                        @if($activity['transaction_type'] === 'deposit')
+                                            <span class="font-bold">depósito</span> de ${{ number_format($activity['amount'], 2) }}
+                                        @elseif($activity['transaction_type'] === 'withdrawal')
+                                            <span class="font-bold">retiro</span> de ${{ number_format($activity['amount'], 2) }}
+                                        @elseif($activity['transaction_type'] === 'account_creation')
+                                            <span class="font-bold">creación de usuario</span>
+                                        @elseif($activity['transaction_type'] === 'account_unlock')
+                                            <span class="font-bold">desbloqueo de cuenta</span>
+                                        @elseif($activity['transaction_type'] === 'password_reset')
+                                            <span class="font-bold">cambio de contraseña</span>
+                                        @endif
                                     @elseif($activity['status'] === 'completed')
-                                        {{ $activity['transaction_type'] === 'deposit' ? 'Carga aprobada' : 'Retiro aprobado' }}
+                                        @if($activity['transaction_type'] === 'deposit')
+                                            Depósito aprobado de ${{ number_format($activity['amount'], 2) }}
+                                        @elseif($activity['transaction_type'] === 'withdrawal')
+                                            Retiro aprobado de ${{ number_format($activity['amount'], 2) }}
+                                        @elseif($activity['transaction_type'] === 'account_creation')
+                                            Usuario creado
+                                        @elseif($activity['transaction_type'] === 'account_unlock')
+                                            Cuenta desbloqueada
+                                        @elseif($activity['transaction_type'] === 'password_reset')
+                                            Contraseña cambiada
+                                        @endif
                                     @else
-                                        {{ $activity['transaction_type'] === 'deposit' ? 'Carga rechazada' : 'Retiro rechazado' }}
+                                        @if($activity['transaction_type'] === 'deposit')
+                                            Depósito rechazado de ${{ number_format($activity['amount'], 2) }}
+                                        @elseif($activity['transaction_type'] === 'withdrawal')
+                                            Retiro rechazado de ${{ number_format($activity['amount'], 2) }}
+                                        @elseif($activity['transaction_type'] === 'account_creation')
+                                            Creación rechazada
+                                        @elseif($activity['transaction_type'] === 'account_unlock')
+                                            Desbloqueo rechazado
+                                        @elseif($activity['transaction_type'] === 'password_reset')
+                                            Cambio rechazado
+                                        @endif
                                     @endif
-                                    
-                                    <span class="font-bold">
-                                        {{ $activity['transaction_type'] === 'deposit' ? 'depósito' : 'retiro' }}
-                                    </span>
-                                    de ${{ number_format($activity['amount'], 2) }}
                                 </p>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                     {{ $activity['time'] }}

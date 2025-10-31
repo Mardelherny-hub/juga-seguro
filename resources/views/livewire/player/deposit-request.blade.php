@@ -45,13 +45,22 @@
                                 @if($tenant->activeBankAccount->bank_name)
                                     <p class="text-blue-100">🏛️ <strong>BANCO:</strong> {{ $tenant->activeBankAccount->bank_name }}</p>
                                 @endif
+                                {{-- si tiene cbu --}}
+                                @if($tenant->activeBankAccount->cbu)
+                                    <p class="text-blue-100">🏛️ CBU: {{ $tenant->activeBankAccount->cbu }}</p>
+                                @endif
+                                {{-- si tiene cvu. --}}
+                                @if($tenant->activeBankAccount->cvu)
+                                    <p class="text-blue-100">🏛️ CVU: {{ $tenant->activeBankAccount->cvu }}</p>
+                                @endif
                                 @if($tenant->activeBankAccount->notes)
                                     <p class="text-xs text-blue-300 mt-2">⚠️ {{ $tenant->activeBankAccount->notes }}</p>
                                 @endif
+                                
                             @else
                                 <p class="text-red-200">⚠️ No hay cuenta configurada. Contacta a soporte.</p>
                             @endif
-<p class="text-xs text-blue-300 mt-2">⚠️ El ALIAS puede cambiar con el tiempo</p>
+                                <p class="text-xs text-blue-300 mt-2">⚠️ El ALIAS puede cambiar con el tiempo</p>
                             </div>
                         </div>
                     </div>

@@ -73,28 +73,82 @@
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-bold text-gray-900 dark:text-white">
                                     @if($activity['status'] === 'pending')
-                                        {{ $activity['transaction_type'] === 'deposit' ? '⏳ Carga en Revisión' : '⏳ Retiro en Revisión' }}
+                                        @if($activity['transaction_type'] === 'deposit')
+                                            ⏳ Carga en Revisión
+                                        @elseif($activity['transaction_type'] === 'withdrawal')
+                                            ⏳ Retiro en Revisión
+                                        @elseif($activity['transaction_type'] === 'account_creation')
+                                            ⏳ Creación de Usuario en Proceso
+                                        @elseif($activity['transaction_type'] === 'account_unlock')
+                                            ⏳ Desbloqueo en Proceso
+                                        @elseif($activity['transaction_type'] === 'password_reset')
+                                            ⏳ Cambio de Contraseña en Proceso
+                                        @endif
                                     @elseif($activity['status'] === 'completed')
-                                        {{ $activity['transaction_type'] === 'deposit' ? '✅ Carga Aprobada' : '✅ Retiro Aprobado' }}
+                                        @if($activity['transaction_type'] === 'deposit')
+                                            ✅ Carga Aprobada
+                                        @elseif($activity['transaction_type'] === 'withdrawal')
+                                            ✅ Retiro Aprobado
+                                        @elseif($activity['transaction_type'] === 'account_creation')
+                                            ✅ Usuario Creado
+                                        @elseif($activity['transaction_type'] === 'account_unlock')
+                                            ✅ Usuario Desbloqueado
+                                        @elseif($activity['transaction_type'] === 'password_reset')
+                                            ✅ Contraseña Cambiada
+                                        @endif
                                     @else
-                                        {{ $activity['transaction_type'] === 'deposit' ? '❌ Carga Rechazada' : '❌ Retiro Rechazado' }}
+                                        @if($activity['transaction_type'] === 'deposit')
+                                            ❌ Carga Rechazada
+                                        @elseif($activity['transaction_type'] === 'withdrawal')
+                                            ❌ Retiro Rechazado
+                                        @elseif($activity['transaction_type'] === 'account_creation')
+                                            ❌ Creación Rechazada
+                                        @elseif($activity['transaction_type'] === 'account_unlock')
+                                            ❌ Desbloqueo Rechazado
+                                        @elseif($activity['transaction_type'] === 'password_reset')
+                                            ❌ Cambio Rechazado
+                                        @endif
                                     @endif
                                 </p>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">
-                                    Monto: <span class="font-bold">${{ number_format($activity['amount'], 2) }}</span>
-                                </p>
+                                
+                                @if(in_array($activity['transaction_type'], ['deposit', 'withdrawal']))
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        Monto: <span class="font-bold">${{ number_format($activity['amount'], 2) }}</span>
+                                    </p>
+                                @else
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        Solicitud de gestión de cuenta
+                                    </p>
+                                @endif
+                                
                                 @if($activity['status'] === 'pending')
                                     <p class="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
                                         Estamos procesando tu solicitud...
                                     </p>
                                 @elseif($activity['status'] === 'completed')
                                     <p class="text-xs text-green-600 dark:text-green-400 mt-1">
-                                        {{ $activity['transaction_type'] === 'deposit' ? '¡Tu saldo fue acreditado!' : '¡Tu retiro fue procesado!' }}
+                                        @if($activity['transaction_type'] === 'deposit')
+                                            ¡Tu saldo fue acreditado!
+                                        @elseif($activity['transaction_type'] === 'withdrawal')
+                                            ¡Tu retiro fue procesado!
+                                        @elseif($activity['transaction_type'] === 'account_creation')
+                                            Revisa tus mensajes para ver las credenciales
+                                        @elseif($activity['transaction_type'] === 'account_unlock')
+                                            Ya puedes acceder a tu cuenta
+                                        @elseif($activity['transaction_type'] === 'password_reset')
+                                            Tu nueva contraseña es: bet123
+                                        @endif
                                     </p>
                                 @else
-                                    <p class="text-xs text-red-600 dark:text-red-400 mt-1">
-                                        Contacta con soporte para más detalles
-                                    </p>
+                                    @if(!empty($activity['notes']))
+                                        <p class="text-xs text-red-600 dark:text-red-400 mt-1 italic">
+                                            Motivo: {{ $activity['notes'] }}
+                                        </p>
+                                    @else
+                                        <p class="text-xs text-red-600 dark:text-red-400 mt-1">
+                                            Contacta con soporte para más detalles
+                                        </p>
+                                    @endif
                                 @endif
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                     {{ $activity['time'] }}

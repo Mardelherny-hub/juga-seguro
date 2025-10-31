@@ -38,11 +38,13 @@
                                 
                                 @if($tenant->logo)
                                 <img 
-                                    src="{{ Storage::url($tenant->logo) }}" 
+                                    src="{{ $currentTenant->logo_url }}" 
                                     alt="{{ $tenant->name }}" 
                                     class="h-10 w-auto object-contain"
                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="hidden items-center gap-2">
+                                <span class="text-xl ml-2 font-bold text-white">{{ $tenant->name }}</span>
+
+                                    <div class="hidden items-center gap-2">
                                     <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-xl" 
                                         style="background: linear-gradient(135deg, {{ $tenant->primary_color ?? '#6366f1' }} 0%, {{ $tenant->secondary_color ?? '#8b5cf6' }} 100%);">
                                         {{ strtoupper(substr($tenant->name, 0, 1)) }}
