@@ -163,13 +163,15 @@
                                 >
                                     Ver
                                 </button>
-                                <button 
-                                    wire:click="$dispatch('openEditPlayer', { playerId: {{ $player->id }} })"
-                                    class="text-indigo-600 hover:text-indigo-900"
-                                    title="Editar"
-                                >
-                                    Editar
-                                </button>
+                                @if(auth()->user()->role === 'admin')
+                                    <button 
+                                        wire:click="$dispatch('openEditPlayer', { playerId: {{ $player->id }} })"
+                                        class="text-indigo-600 hover:text-indigo-900"
+                                        title="Editar"
+                                    >
+                                        Editar
+                                    </button>
+                                @endif
                             </td>
                         </tr>
                     @empty

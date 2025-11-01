@@ -7,33 +7,36 @@ use App\Livewire\Agent\Dashboard;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'tenant.identify'])->group(function () {
-    
-   // Dashboard del Agente
+
+    // Dashboard del Agente (todos pueden acceder)
     Route::view('/', 'agent.dashboard')->name('dashboard');
     Route::view('/dashboard', 'agent.dashboard');
 
-    // Gestión de Jugadores
+    // Gestión de Jugadores (todos pueden acceder)
     Route::view('/dashboard/players', 'agent.players.index')->name('dashboard.players');
 
-    //profile (temporal - reestructurar en próxima sesión)
+    //profile (todos pueden acceder)
     Route::view('/profile', 'agent.profile')->name('profile');
 
 
-    // Gestión de Transacciones
+    // Gestión de Transacciones (todos pueden acceder)
     Route::view('/dashboard/transactions/pending', 'agent.transactions.pending')->name('dashboard.transactions.pending');
     Route::view('/dashboard/transactions/history', 'agent.transactions.history')->name('dashboard.transactions.history');
     Route::view('/dashboard/transactions/monitor', 'agent.transactions.monitor')->name('dashboard.transactions.monitor');
 
-    // Route pane de mensajes del agente
+    // Route panel de mensajes del agente
     Route::get('/messages', fn() => view('agent.messages'))->name('messages');
 
-    // Gestión de Bonos
-    Route::get('/bonuses', fn() => view('agent.bonuses'))->name('bonuses');
+     // RUTAS SOLO PARA ADMIN
+    Route::middleware(['admin.only'])->group(function () {
+        // Gestión de Bonos (solo admin)
+        Route::get('/bonuses', fn() => view('agent.bonuses'))->name('bonuses');
 
-    // Gestión de Cuentas Bancarias
-    Route::view('/dashboard/bank-accounts', 'agent.bank-accounts.index')
-    ->name('dashboard.bank-accounts');
+        // Gestión de Cuentas Bancarias (solo admin)
+        Route::view('/dashboard/bank-accounts', 'agent.bank-accounts.index')
+            ->name('dashboard.bank-accounts');
 
-    //settings
-    Route::view('/settings', 'agent.settings')->name('settings');
+        // Settings/Configuración (solo admin)
+        Route::view('/settings', 'agent.settings')->name('settings');
+    });
 }); 

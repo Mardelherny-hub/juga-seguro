@@ -29,9 +29,8 @@ class TenantSettings extends Component
 
     /** ========= Usuarios del tenant (CRUD inline) ========= */
     public array $roles = [
-        'admin'  => 'Administrador',
-        'agent'  => 'Operador',
-        'viewer' => 'Consulta',
+        'admin'    => 'Administrador',
+        'operator' => 'Operador',
     ];
 
     // listado / búsqueda simple
@@ -42,7 +41,7 @@ class TenantSettings extends Component
     public ?int $editingId = null;
     public string $name = '';
     public string $email = '';
-    public string $role = 'operador';
+    public string $role = 'operator';
     public ?string $password = null;
     public ?string $password_confirmation = null;
 
@@ -98,7 +97,7 @@ class TenantSettings extends Component
         $rules = [
             'name'  => ['required','string','max:255'],
             'email' => ['required','email',$uniqueEmail],
-            'role'  => ['required', Rule::in(array_keys($this->roles))],
+            'role'  => ['required', Rule::in(['admin', 'operator'])],
         ];
 
         $passRules = ['string','min:8','confirmed'];
@@ -341,7 +340,7 @@ class TenantSettings extends Component
         $this->editingId = null;
         $this->name = '';
         $this->email = '';
-        $this->role = 'operador';
+        $this->role = 'operator';
         $this->password = null;
         $this->password_confirmation = null;
     }

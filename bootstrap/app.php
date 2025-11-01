@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant.identify' => IdentifyTenant::class,
             'super.admin' => SuperAdmin::class,
             'auth.player' => AuthenticatePlayer::class,
+            'admin.only' => \App\Http\Middleware\CheckAdminRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

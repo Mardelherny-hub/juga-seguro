@@ -81,10 +81,10 @@
                     </div>
                 </div>
             </div>
-
-            <livewire:agent.bonus-settings />
-            <livewire:agent.contact-settings />
-
+            @if(auth()->user()->role === 'admin') 
+                <livewire:agent.bonus-settings />
+                <livewire:agent.contact-settings />
+            @endif
         </div>
 
         {{-- Últimas Transacciones --}}
