@@ -47,60 +47,58 @@
                                    style="{{ request()->routeIs('dashboard.players') ? 'border-color: ' . $currentTenant->primary_color . '; color: ' . $currentTenant->primary_color : 'border-color: transparent' }}">
                                     Jugadores
                                 </a>
-
-                                @if(auth()->user()->role === 'admin')
-                                    <!-- Transacciones con Dropdown -->
-                                    <div x-data="{ openTrans: false }" @click.away="openTrans = false" class="relative flex items-center">
-                                        <button @click="openTrans = !openTrans"
-                                                class="inline-flex items-center px-3 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out h-full
-                                                {{ request()->routeIs('dashboard.transactions.*') ? 'text-gray-900 dark:text-gray-100' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300' }}"
-                                                style="{{ request()->routeIs('dashboard.transactions.*') ? 'border-color: ' . $currentTenant->primary_color . '; color: ' . $currentTenant->primary_color : 'border-color: transparent' }}">
-                                            <span>Transacciones</span>
-                                            <livewire:agent.transactions.pending-badge />
-                                            <svg class="ml-2 w-4 h-4 transition-transform" :class="openTrans ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                            </svg>
-                                        </button>
-                                        
-                                        <div x-show="openTrans"
-                                            x-transition:enter="transition ease-out duration-200"
-                                            x-transition:enter-start="opacity-0 scale-95"
-                                            x-transition:enter-end="opacity-100 scale-100"
-                                            x-transition:leave="transition ease-in duration-150"
-                                            x-transition:leave-start="opacity-100 scale-100"
-                                            x-transition:leave-end="opacity-0 scale-95"
-                                            class="absolute left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 z-50"
-                                            style="top: 100%;">
-                                            <div class="py-2">
-                                                <a href="{{ route('dashboard.transactions.pending') }}" wire:navigate
-                                                class="flex items-center px-4 py-3 text-sm transition-colors {{ request()->routeIs('dashboard.transactions.pending') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : 'hover:bg-gray-50 dark:hover:bg-gray-700' }}"
-                                                style="{{ request()->routeIs('dashboard.transactions.pending') ? 'background-color: ' . $currentTenant->primary_color . '20; color: ' . $currentTenant->primary_color : '' }}">
-                                                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                    </svg>
-                                                    <span>Pendientes</span>
-                                                </a>
-                                                <a href="{{ route('dashboard.transactions.history') }}" wire:navigate
-                                                class="flex items-center px-4 py-3 text-sm transition-colors {{ request()->routeIs('dashboard.transactions.history') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : 'hover:bg-gray-50 dark:hover:bg-gray-700' }}"
-                                                style="{{ request()->routeIs('dashboard.transactions.history') ? 'background-color: ' . $currentTenant->primary_color . '20; color: ' . $currentTenant->primary_color : '' }}">
-                                                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                                                    </svg>
-                                                    <span>Historial</span>
-                                                </a>
-                                                <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-                                                <a href="{{ route('dashboard.transactions.monitor') }}" wire:navigate
-                                                class="flex items-center px-4 py-3 text-sm transition-colors {{ request()->routeIs('dashboard.transactions.monitor') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : 'hover:bg-gray-50 dark:hover:bg-gray-700' }}"
-                                                style="{{ request()->routeIs('dashboard.transactions.monitor') ? 'background-color: ' . $currentTenant->primary_color . '20; color: ' . $currentTenant->primary_color : '' }}">
-                                                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                                    </svg>
-                                                    <span>Modo Monitor</span>
-                                                </a>
-                                            </div>
+                                <!-- Transacciones con Dropdown -->
+                                <div x-data="{ openTrans: false }" @click.away="openTrans = false" class="relative flex items-center">
+                                    <button @click="openTrans = !openTrans"
+                                            class="inline-flex items-center px-3 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out h-full
+                                            {{ request()->routeIs('dashboard.transactions.*') ? 'text-gray-900 dark:text-gray-100' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300' }}"
+                                            style="{{ request()->routeIs('dashboard.transactions.*') ? 'border-color: ' . $currentTenant->primary_color . '; color: ' . $currentTenant->primary_color : 'border-color: transparent' }}">
+                                        <span>Transacciones</span>
+                                        <livewire:agent.transactions.pending-badge />
+                                        <svg class="ml-2 w-4 h-4 transition-transform" :class="openTrans ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </button>
+                                    
+                                    <div x-show="openTrans"
+                                        x-transition:enter="transition ease-out duration-200"
+                                        x-transition:enter-start="opacity-0 scale-95"
+                                        x-transition:enter-end="opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-150"
+                                        x-transition:leave-start="opacity-100 scale-100"
+                                        x-transition:leave-end="opacity-0 scale-95"
+                                        class="absolute left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 z-50"
+                                        style="top: 100%;">
+                                        <div class="py-2">
+                                            <a href="{{ route('dashboard.transactions.pending') }}" wire:navigate
+                                            class="flex items-center px-4 py-3 text-sm transition-colors {{ request()->routeIs('dashboard.transactions.pending') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : 'hover:bg-gray-50 dark:hover:bg-gray-700' }}"
+                                            style="{{ request()->routeIs('dashboard.transactions.pending') ? 'background-color: ' . $currentTenant->primary_color . '20; color: ' . $currentTenant->primary_color : '' }}">
+                                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                <span>Pendientes</span>
+                                            </a>
+                                            <a href="{{ route('dashboard.transactions.history') }}" wire:navigate
+                                            class="flex items-center px-4 py-3 text-sm transition-colors {{ request()->routeIs('dashboard.transactions.history') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : 'hover:bg-gray-50 dark:hover:bg-gray-700' }}"
+                                            style="{{ request()->routeIs('dashboard.transactions.history') ? 'background-color: ' . $currentTenant->primary_color . '20; color: ' . $currentTenant->primary_color : '' }}">
+                                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                                </svg>
+                                                <span>Historial</span>
+                                            </a>
+                                            <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                                            <a href="{{ route('dashboard.transactions.monitor') }}" wire:navigate
+                                            class="flex items-center px-4 py-3 text-sm transition-colors {{ request()->routeIs('dashboard.transactions.monitor') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : 'hover:bg-gray-50 dark:hover:bg-gray-700' }}"
+                                            style="{{ request()->routeIs('dashboard.transactions.monitor') ? 'background-color: ' . $currentTenant->primary_color . '20; color: ' . $currentTenant->primary_color : '' }}">
+                                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                                </svg>
+                                                <span>Modo Monitor</span>
+                                            </a>
                                         </div>
                                     </div>
-
+                                </div>
+                                @if(auth()->user()->role === 'admin')
                                     <!-- Bonos -->
                                     <a href="{{ route('bonuses') }}" wire:navigate
                                         class="inline-flex items-center px-3 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out
@@ -206,14 +204,14 @@
                            style="{{ request()->routeIs('dashboard.players') ? 'border-color: ' . $currentTenant->primary_color : '' }}">
                             Jugadores
                         </a>
-                        @if(auth()->user()->role === 'admin')
-                            <!-- Transacciones -->
+                        <!-- Transacciones -->
                             <a href="{{ route('dashboard.transactions.pending') }}" wire:navigate 
                             class="block w-full ps-3 pe-4 py-2 border-l-4 text-base font-medium transition
                             {{ request()->routeIs('dashboard.transactions.*') ? 'bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700' }}"
                             style="{{ request()->routeIs('dashboard.transactions.*') ? 'border-color: ' . $currentTenant->primary_color : '' }}">
                                 Transacciones
                             </a>
+                        @if(auth()->user()->role === 'admin')                            
                             <a href="{{ route('bonuses') }}" wire:navigate 
                                 class="block w-full ps-3 pe-4 py-2 border-l-4 text-base font-medium transition
                                 {{ request()->routeIs('agent.bonuses') ? 'bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700' }}"
