@@ -31,7 +31,14 @@ class NewTransactionMonitor extends Component
 
             // Disparar notificación persistente para cada nueva transacción
             foreach ($newTransactions as $transaction) {
-                $typeText = $transaction->type === 'deposit' ? 'DEPÓSITO' : 'RETIRO';
+                $typeText = match($transaction->type) {
+                        'deposit' => 'DEPÓSITO',
+                        'withdrawal' => 'RETIRO',
+                        'account_creation' => 'CREAR USUARIO',
+                        'account_unlock' => 'DESBLOQUEO',
+                        'password_reset' => 'CAMBIAR CONTRASEÑA',
+                        default => 'SOLICITUD'
+                    };
                 $message = "🔔 Nuevo {$typeText} de {$transaction->player->name} por \${$transaction->amount}";
                 
                 $this->dispatch('notify', [

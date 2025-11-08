@@ -9,7 +9,19 @@
                         <svg class="w-8 h-8 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        Aprobar Transacción
+                        @if($transaction->type === 'deposit')
+                            Aprobar Depósito
+                        @elseif($transaction->type === 'withdrawal')
+                            Aprobar Retiro
+                        @elseif($transaction->type === 'account_creation')
+                            Aprobar Creación de Usuario
+                        @elseif($transaction->type === 'account_unlock')
+                            Aprobar Desbloqueo
+                        @elseif($transaction->type === 'password_reset')
+                            Aprobar Cambio de Contraseña
+                        @else
+                            Aprobar Solicitud
+                        @endif
                     </h3>
                     <button wire:click="closeModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,21 +77,51 @@
                                             </svg>
                                             DEPÓSITO
                                         </span>
-                                    @else
+                                    @elseif($transaction->type === 'withdrawal')
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
                                             </svg>
                                             RETIRO
                                         </span>
+                                    @elseif($transaction->type === 'account_creation')
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                            </svg>
+                                            CREAR USUARIO
+                                        </span>
+                                    @elseif($transaction->type === 'account_unlock')
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                                            </svg>
+                                            DESBLOQUEAR
+                                        </span>
+                                    @elseif($transaction->type === 'password_reset')
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                                            </svg>
+                                            CAMBIAR CONTRASEÑA
+                                        </span>
                                     @endif
                                 </div>
 
-                                {{-- Monto --}}
-                                <div>
-                                    <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Monto</p>
-                                    <p class="text-3xl font-bold text-gray-900 dark:text-white">${{ number_format($transaction->amount, 2) }}</p>
-                                </div>
+                                {{-- Monto (solo para deposit/withdrawal) --}}
+                                @if(in_array($transaction->type, ['deposit', 'withdrawal']))
+                                    <div>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Monto</p>
+                                        <p class="text-3xl font-bold text-gray-900 dark:text-white">${{ number_format($transaction->amount, 2) }}</p>
+                                    </div>
+                                @else
+                                    <div>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Solicitud</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                                            Gestión de cuenta
+                                        </p>
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="grid grid-cols-2 gap-4">
@@ -109,6 +151,53 @@
                                 </div>
                             @endif
                         </div>
+
+                        {{-- Credenciales para solicitudes de cuenta --}}
+                        @if($transaction && $transaction->requiresCredentials())
+                            <div class="bg-blue-50 dark:bg-blue-900 dark:bg-opacity-20 rounded-lg p-4 border-2 border-blue-200 dark:border-blue-800">
+                                <h4 class="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-3">
+                                    @if($transaction->type === 'account_creation')
+                                        🎮 CREDENCIALES DE USUARIO
+                                    @else
+                                        🔑 NUEVA CONTRASEÑA
+                                    @endif
+                                </h4>
+                                
+                                @if($transaction->type === 'account_creation')
+                                    <div class="mb-3">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            Usuario *
+                                        </label>
+                                        <input type="text" 
+                                               wire:model="username" 
+                                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                                               placeholder="Ej: jugador123"
+                                               required>
+                                        @error('username')
+                                            <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @endif
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Contraseña *
+                                    </label>
+                                    <input type="text" 
+                                           wire:model="password" 
+                                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                                           placeholder="Mínimo 6 caracteres"
+                                           required>
+                                    @error('password')
+                                        <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <p class="mt-3 text-xs text-blue-700 dark:text-blue-300">
+                                    ⚠️ Estas credenciales se enviarán automáticamente al jugador dentro de la plataforma al aprobar.
+                                </p>
+                            </div>
+                        @endif
 
                         {{-- Comprobante (solo para depósitos) --}}
                         @if($transaction->type === 'deposit')

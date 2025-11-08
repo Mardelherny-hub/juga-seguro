@@ -6,29 +6,50 @@ use App\Models\Player;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use App\Livewire\Traits\WithToast;
 
 class PlayerAccountActions extends Component
 {
+        use WithToast;
+
     #[Reactive]
     public Player $player;
     public bool $showCreateUserModal = false;
     public bool $showUnlockModal = false;
     public bool $showPasswordResetModal = false;
+    // Opción de creación de cuenta
+    public string $accountCreationType = 'new'; // 'new' o 'existing'
+    public string $existingUsername = '';
 
     public function requestAccountCreation()
     {
-        // Verificar que no tenga solicitud pendiente
+        // Verificar que no tenga NINGUNA solicitud pendiente
         $pending = Transaction::where('player_id', $this->player->id)
-            ->where('type', 'account_creation')
             ->where('status', 'pending')
             ->exists();
 
         if ($pending) {
-            $this->dispatch('notify', [
-                'type' => 'warning',
-                'message' => 'Ya existe una solicitud de creación de usuario pendiente.'
-            ]);
+            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada.'. 'error');
             return;
+        }
+
+        // Validar según el tipo
+        if ($this->accountCreationType === 'existing') {
+            // Validar que ingresó username
+            if (empty($this->existingUsername)) {
+                $this->showToast('Debes ingresar tu nombre de usuario existente.', 'error');
+                return;
+            }
+            
+            // Validar formato
+            if (!preg_match('/^[a-zA-Z][a-zA-Z0-9]{3,14}$/', $this->existingUsername)) {
+                $this->showToast('El formato del usuario no es válido.', 'error');
+                return;
+            }
+            
+            $notes = "YA TIENE USUARIO: {$this->existingUsername}";
+        } else {
+            $notes = 'Solicitud de creación de usuario en plataforma de juego';
         }
 
         Transaction::create([
@@ -39,7 +60,7 @@ class PlayerAccountActions extends Component
             'balance_before' => $this->player->balance,
             'balance_after' => $this->player->balance,
             'status' => 'pending',
-            'notes' => 'Solicitud de creación de usuario en plataforma de juego',
+            'notes' => $notes,
             'transaction_hash' => Str::uuid(),
         ]);
 
@@ -48,26 +69,26 @@ class PlayerAccountActions extends Component
             ->causedBy(auth()->user())
             ->log('Solicitud de creación de usuario generada');
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Solicitud de creación de usuario generada correctamente.'
-        ]);
-
+        $this->showToast('Solicitud generada correctamente.', 'success');
+        
+        
+        // Resetear campos
+        $this->accountCreationType = 'new';
+        $this->existingUsername = '';
         $this->showCreateUserModal = false;
     }
 
     public function requestAccountUnlock()
     {
-        // Verificar que no tenga solicitud pendiente
+        // Verificar que no tenga NINGUNA solicitud pendiente
         $pending = Transaction::where('player_id', $this->player->id)
-            ->where('type', 'account_unlock')
             ->where('status', 'pending')
             ->exists();
 
         if ($pending) {
             $this->dispatch('notify', [
                 'type' => 'warning',
-                'message' => 'Ya existe una solicitud de desbloqueo pendiente.'
+                'message' => 'Ya tienes una solicitud pendiente. Espera a que sea procesada.'
             ]);
             return;
         }
@@ -91,7 +112,8 @@ class PlayerAccountActions extends Component
 
         $this->dispatch('notify', [
             'type' => 'success',
-            'message' => 'Solicitud de desbloqueo generada correctamente.'
+            'message' => 'Solicitud de desbloqueo generada correctamente.',
+            'persistent' => true
         ]);
 
         $this->showUnlockModal = false;
@@ -99,17 +121,13 @@ class PlayerAccountActions extends Component
 
     public function requestPasswordReset()
     {
-        // Verificar que no tenga solicitud pendiente
+        // Verificar que no tenga NINGUNA solicitud pendiente
         $pending = Transaction::where('player_id', $this->player->id)
-            ->where('type', 'password_reset')
             ->where('status', 'pending')
             ->exists();
 
         if ($pending) {
-            $this->dispatch('notify', [
-                'type' => 'warning',
-                'message' => 'Ya existe una solicitud de cambio de contraseña pendiente.'
-            ]);
+            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada.', 'error');
             return;
         }
 
@@ -130,12 +148,54 @@ class PlayerAccountActions extends Component
             ->causedBy(auth()->user())
             ->log('Solicitud de cambio de contraseña generada');
 
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Solicitud de cambio de contraseña generada correctamente.'
-        ]);
+        $this->showToast('Solicitud de cambio de contraseña generada correctamente.', 'succes');
 
         $this->showPasswordResetModal = false;
+    }
+
+    public function openCreateUserModal()
+    {
+        // Verificar que no tenga NINGUNA solicitud pendiente
+        $pending = Transaction::where('player_id', $this->player->id)
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($pending) {
+            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada.', 'error');
+            return;
+        }
+
+        $this->showCreateUserModal = true;
+    }
+
+    public function openUnlockModal()
+    {
+        // Verificar que no tenga NINGUNA solicitud pendiente
+        $pending = Transaction::where('player_id', $this->player->id)
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($pending) {
+            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada.', 'error');
+            return;
+        }
+
+        $this->showUnlockModal = true;
+    }
+
+    public function openPasswordResetModal()
+    {
+        // Verificar que no tenga NINGUNA solicitud pendiente
+        $pending = Transaction::where('player_id', $this->player->id)
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($pending) {
+            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada.', 'error');
+            return;
+        }
+
+        $this->showPasswordResetModal = true;
     }
 
     public function render()

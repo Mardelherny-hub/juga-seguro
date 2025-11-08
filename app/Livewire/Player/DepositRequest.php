@@ -31,6 +31,15 @@ class DepositRequest extends Component
 
     public function open()
     {
+        // Verificar que no tenga NINGUNA solicitud pendiente
+        $hasPendingRequest = $this->player->transactions()
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($hasPendingRequest) {
+            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada antes de solicitar un depósito.', 'error');
+            return;
+        }
         // Verificar que exista cuenta bancaria activa
         $activeBankAccount = $this->tenant->activeBankAccount;
         

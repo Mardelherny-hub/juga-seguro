@@ -32,13 +32,12 @@ class RejectTransaction extends Component
     protected function rules()
     {
         return [
-            'rejectionReason' => 'required|string|min:10',
+            'rejectionReason' => 'nullable|string|min:10',
         ];
     }
 
     protected $messages = [
-        'rejectionReason.required' => 'Debes indicar el motivo del rechazo',
-        'rejectionReason.min' => 'El motivo debe tener al menos 10 caracteres',
+        'rejectionReason.min' => 'Si ingresas un motivo, debe tener al menos 10 caracteres',
     ];
 
     public function reject()

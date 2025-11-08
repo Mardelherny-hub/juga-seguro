@@ -41,6 +41,16 @@ class WithdrawalRequest extends Component
 
     public function open()
     {
+        // Verificar que no tenga NINGUNA solicitud pendiente
+        $hasPendingRequest = $this->player->transactions()
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($hasPendingRequest) {
+            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada antes de solicitar un retiro.', 'error');
+            return;
+        }
+
         $this->loadSavedAccounts();
         $this->isOpen = true;
     }
@@ -75,17 +85,6 @@ class WithdrawalRequest extends Component
         // Verificar que tenga cuentas
         if ($this->savedAccounts->isEmpty()) {
             $this->showToast('Primero debes agregar una cuenta de retiro', 'error');
-            return;
-        }
-
-        // Verificar que no tenga retiros pendientes
-        $hasPendingWithdrawal = $this->player->transactions()
-            ->where('type', 'withdrawal')
-            ->where('status', 'pending')
-            ->exists();
-
-        if ($hasPendingWithdrawal) {
-            $this->showToast('Ya tienes un retiro pendiente. Espera a que sea procesado.', 'error');
             return;
         }
 

@@ -66,14 +66,14 @@
                     <!-- Motivo del rechazo -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Motivo del rechazo <span class="text-red-500">*</span>
+                            Motivo del rechazo 
                         </label>
                         <textarea 
                             wire:model="rejectionReason"
-                            rows="4"
+                            rows="2"
                             placeholder="Explica claramente por qué se rechaza esta transacción..."
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                            required></textarea>
+                            ></textarea>
                         @error('rejectionReason') 
                             <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1">
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">

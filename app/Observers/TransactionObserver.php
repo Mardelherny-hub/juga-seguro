@@ -23,13 +23,46 @@ class TransactionObserver
      */
     public function created(Transaction $transaction): void
     {
-        // Solo notificar si es una solicitud del jugador (deposit o withdrawal)
-        if ($transaction->type === 'deposit' && $transaction->status === 'pending') {
+        // Notificar solo si es pending
+        if ($transaction->status !== 'pending') {
+            return;
+        }
+
+        // Notificar según el tipo
+        if ($transaction->type === 'deposit') {
             $this->messageService->notifyDepositRequest($transaction);
         }
 
-        if ($transaction->type === 'withdrawal' && $transaction->status === 'pending') {
+        if ($transaction->type === 'withdrawal') {
             $this->messageService->notifyWithdrawalRequest($transaction);
+        }
+
+        // Notificaciones para solicitudes de cuenta
+        if ($transaction->type === 'account_creation') {
+            $this->messageService->sendSystemMessage(
+                $transaction->player,
+                '📝 Tu solicitud de creación de usuario fue recibida. Te avisaremos cuando sea procesada.',
+                'account',
+                $transaction
+            );
+        }
+
+        if ($transaction->type === 'account_unlock') {
+            $this->messageService->sendSystemMessage(
+                $transaction->player,
+                '🔓 Tu solicitud de desbloqueo fue recibida. Te avisaremos cuando sea procesada.',
+                'account',
+                $transaction
+            );
+        }
+
+        if ($transaction->type === 'password_reset') {
+            $this->messageService->sendSystemMessage(
+                $transaction->player,
+                '🔑 Tu solicitud de cambio de contraseña fue recibida. Te avisaremos cuando sea procesada.',
+                'account',
+                $transaction
+            );
         }
     }
 
@@ -119,6 +152,35 @@ class TransactionObserver
                     $this->messageService->notifyWithdrawalRejected($transaction, $reason);
                 }
                 // Para los tipos de cuenta, ya se maneja en TransactionApproval/Rejection
+            }
+        }
+
+        // Solicitudes de cuenta (account_creation, account_unlock, password_reset)
+        if ($transaction->isAccountRequest()) {
+            if ($transaction->status === 'completed') {
+                // Extraer credenciales del campo notes
+                $notes = $transaction->notes ?? '';
+                
+                if ($transaction->type === 'account_creation') {
+                    // Buscar patrón: "Usuario: xxxx | Contraseña: yyyy"
+                    if (preg_match('/Usuario:\s*(\S+)\s*\|\s*Contraseña:\s*(\S+)/', $notes, $matches)) {
+                        $username = $matches[1];
+                        $password = $matches[2];
+                        $this->messageService->notifyAccountCreated($transaction, $username, $password);
+                    }
+                }
+                
+                if ($transaction->type === 'account_unlock') {
+                    $this->messageService->notifyAccountUnlocked($transaction);
+                }
+                
+                if ($transaction->type === 'password_reset') {
+                    // Buscar patrón: "Nueva contraseña: xxxx"
+                    if (preg_match('/Nueva contraseña:\s*(\S+)/', $notes, $matches)) {
+                        $newPassword = $matches[1];
+                        $this->messageService->notifyPasswordChanged($transaction, $newPassword);
+                    }
+                }
             }
         }
     }

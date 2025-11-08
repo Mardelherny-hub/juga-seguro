@@ -174,9 +174,11 @@ class MessageService
 
     public function notifyDepositRejected(Transaction $transaction, string $reason): void
     {
+        $reasonText = empty(trim($reason)) ? 'Contacta a soporte para más información.' : $reason;
+        
         $this->sendSystemMessage(
             $transaction->player,
-            "❌ Tu depósito de $" . number_format($transaction->amount, 2) . " fue rechazado. Motivo: {$reason}",
+            "❌ Tu depósito de $" . number_format($transaction->amount, 2) . " fue rechazado. Motivo: {$reasonText}",
             'transaction',
             $transaction
         );
@@ -187,15 +189,19 @@ class MessageService
         // Mensaje para el jugador
         $this->sendSystemMessage(
             $transaction->player,
-            "✅ Recibimos tu solicitud de retiro de $" . number_format($transaction->amount, 2) . ". Será procesada en 24-48 horas hábiles.",
+            "✅ Recibimos tu solicitud de retiro de $" . number_format($transaction->amount, 2) . ". Será procesada en breve.",
             'transaction',
             $transaction
         );
+    }
 
-        // Mensaje para el agente
+    public function notifyWithdrawalRejected(Transaction $transaction, string $reason): void
+    {
+        $reasonText = empty(trim($reason)) ? 'Contacta a soporte para más información.' : $reason;
+        
         $this->sendSystemMessage(
             $transaction->player,
-            "🔔 Nueva solicitud de retiro de $" . number_format($transaction->amount, 2) . " del jugador {$transaction->player->name}.",
+            "❌ Tu retiro de $" . number_format($transaction->amount, 2) . " fue rechazado. Motivo: {$reasonText}",
             'transaction',
             $transaction
         );
@@ -206,16 +212,6 @@ class MessageService
         $this->sendSystemMessage(
             $transaction->player,
             "✅ Tu retiro de $" . number_format($transaction->amount, 2) . " fue aprobado. El dinero está en camino.",
-            'transaction',
-            $transaction
-        );
-    }
-
-    public function notifyWithdrawalRejected(Transaction $transaction, string $reason): void
-    {
-        $this->sendSystemMessage(
-            $transaction->player,
-            "❌ Tu retiro de $" . number_format($transaction->amount, 2) . " fue rechazado. Motivo: {$reason}",
             'transaction',
             $transaction
         );
@@ -262,6 +258,55 @@ class MessageService
             $player,
             "✅ Tu cuenta ha sido reactivada. Ya puedes continuar usando nuestros servicios.",
             'account'
+        );
+    }
+
+    /**
+     * MENSAJES AUTOMÁTICOS - Solicitudes de cuenta
+     */
+
+    public function notifyAccountCreated(Transaction $transaction, string $username, string $password): void
+    {
+        $message = "✅ *¡TU USUARIO FUE CREADO!*\n\n";
+        $message .= "🎮 *Usuario:* {$username}\n";
+        $message .= "🔑 *Contraseña:* {$password}\n\n";
+        $message .= "Ya puedes ingresar a la plataforma de juego.\n";
+        $message .= "¡Mucha suerte! 🍀";
+        
+        $this->sendSystemMessage(
+            $transaction->player,
+            $message,
+            'account',
+            $transaction
+        );
+    }
+
+    public function notifyAccountUnlocked(Transaction $transaction): void
+    {
+        $message = "✅ *¡TU CUENTA FUE DESBLOQUEADA!*\n\n";
+        $message .= "Tu usuario en la plataforma de juego ha sido desbloqueado correctamente.\n";
+        $message .= "Ya puedes volver a ingresar. ¡Bienvenido de nuevo! 🎮";
+        
+        $this->sendSystemMessage(
+            $transaction->player,
+            $message,
+            'account',
+            $transaction
+        );
+    }
+
+    public function notifyPasswordChanged(Transaction $transaction, string $newPassword): void
+    {
+        $message = "✅ *¡TU CONTRASEÑA FUE CAMBIADA!*\n\n";
+        $message .= "🔑 *Nueva contraseña:* {$newPassword}\n\n";
+        $message .= "Ya puedes ingresar a la plataforma con tu nueva contraseña.\n";
+        $message .= "Te recomendamos cambiarla desde tu perfil por una que recuerdes mejor. 🔐";
+        
+        $this->sendSystemMessage(
+            $transaction->player,
+            $message,
+            'account',
+            $transaction
         );
     }
 }

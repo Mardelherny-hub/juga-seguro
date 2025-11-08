@@ -31,12 +31,11 @@ class TransactionRejection extends Component
     ];
 
     protected $rules = [
-        'rejectionReason' => 'required|min:10|max:500',
+        'rejectionReason' => 'nullable|min:10|max:500',
     ];
 
     protected $messages = [
-        'rejectionReason.required' => 'El motivo del rechazo es obligatorio',
-        'rejectionReason.min' => 'El motivo debe tener al menos 10 caracteres',
+        'rejectionReason.min' => 'Si ingresas un motivo, debe tener al menos 10 caracteres',
         'rejectionReason.max' => 'El motivo no puede exceder 500 caracteres',
     ];
 
@@ -107,7 +106,8 @@ class TransactionRejection extends Component
 
             $this->dispatch('notify', [
                 'type' => 'success',
-                'message' => $this->getTypeLabel() . ' rechazada correctamente'
+                'message' => $this->getTypeLabel() . ' rechazada correctamente',
+                'persistent' => true
             ]);
             
             $this->dispatch('transactionProcessed');
@@ -117,7 +117,8 @@ class TransactionRejection extends Component
         } catch (\Exception $e) {
             $this->dispatch('notify', [
                 'type' => 'error',
-                'message' => 'Error: ' . $e->getMessage()
+                'message' => 'Error: ' . $e->getMessage(),
+                'persistent' => true
             ]);
         } finally {
             $this->isProcessing = false;
@@ -139,16 +140,17 @@ class TransactionRejection extends Component
     private function notifyPlayer($transaction, $status)
     {
         $messageService = app(\App\Services\MessageService::class);
+        $reasonText = empty(trim($this->rejectionReason)) ? 'Contacta a soporte para más información.' : $this->rejectionReason;
         
         $messages = [
             'account_creation' => [
-                'rejected' => '❌ Tu solicitud de creación de usuario fue rechazada. Motivo: ' . $this->reason
+                'rejected' => '❌ Tu solicitud de creación de usuario fue rechazada. Motivo: ' . $reasonText
             ],
             'account_unlock' => [
-                'rejected' => '❌ Tu solicitud de desbloqueo fue rechazada. Motivo: ' . $this->reason
+                'rejected' => '❌ Tu solicitud de desbloqueo fue rechazada. Motivo: ' . $reasonText
             ],
             'password_reset' => [
-                'rejected' => '❌ Tu solicitud de cambio de contraseña fue rechazada. Motivo: ' . $this->reason
+                'rejected' => '❌ Tu solicitud de cambio de contraseña fue rechazada. Motivo: ' . $reasonText
             ],
         ];
 
