@@ -33,7 +33,10 @@ class IdentifyTenant
         }
         
         // PASO 1: Buscar por dominio personalizado completo
-        $tenant = Tenant::where('custom_domain', $host)
+        // Normalizar host removiendo www si existe
+        $hostWithoutWww = str_starts_with($host, 'www.') ? substr($host, 4) : $host;
+
+        $tenant = Tenant::where('custom_domain', $hostWithoutWww)
             ->where('is_active', true)
             ->first();
         
