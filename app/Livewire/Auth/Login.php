@@ -125,7 +125,7 @@ class Login extends Component
         }
 
         if (!Auth::guard('web')->attempt(
-            ['credential' =>$this->credential, 'password' => $this->password, 'tenant_id' => $currentTenant->id],
+            ['email' =>$this->email, 'password' => $this->password, 'tenant_id' => $currentTenant->id],
             $this->remember
         )) {
             RateLimiter::hit($this->throttleKey());
@@ -186,7 +186,7 @@ class Login extends Component
         if (!Hash::check($this->password, $player->password)) {
             RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
-                'email' =>__('Las credenciales no coinciden con nuestros registros.'),
+                'credential' =>__('Las credenciales no coinciden con nuestros registros.'),
             ]);
         }
 
