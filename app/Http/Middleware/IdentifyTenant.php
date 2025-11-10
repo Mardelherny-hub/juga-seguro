@@ -96,12 +96,22 @@ class IdentifyTenant
         if (str_ends_with($host, '.' . $appDomain)) {
             // Extraer la parte del subdomain
             $subdomain = str_replace('.' . $appDomain, '', $host);
+            
+            // Remover 'www.' del inicio si existe
+            if (str_starts_with($subdomain, 'www.')) {
+                $subdomain = str_replace('www.', '', $subdomain);
+            }
+            
+            // Si después de remover www queda vacío o es solo 'www', retornar null
+            if (empty($subdomain) || $subdomain === 'www') {
+                return null;
+            }
+            
             return $subdomain;
         }
         
         return null;
     }
-    
     /**
      * Establecer el tenant en el request y config
      */
