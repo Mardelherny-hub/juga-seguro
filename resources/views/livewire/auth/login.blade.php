@@ -72,9 +72,10 @@
                 <span class="text-sm text-gray-300">Recordarme</span>
             </label>
             
-            <a href="#" class="text-sm text-purple-400 hover:text-purple-300 underline">
+                {{-- TODO: Implementar recuperación de contraseña --}}
+            {{-- <a href="#" class="text-sm text-purple-400 hover:text-purple-300 underline">
                 ¿Olvidaste tu contraseña?
-            </a>
+            </a> --}}
         </div>
 
         <!-- Botón de Login -->
@@ -94,12 +95,14 @@
             </span>
         </button>
 
-        <!-- Link a Registro -->
+        <!-- Link a Registro (solo para tenants, no para super admin) -->
+        @if($currentTenant)
         <p class="text-center text-sm text-gray-400 mt-6">
             ¿No tienes una cuenta? 
             <a href="{{ route('player.register') }}" class="text-purple-400 hover:text-purple-300 font-semibold underline">
                 Regístrate aquí
             </a>
         </p>
+        @endif
     </form>
 </div>

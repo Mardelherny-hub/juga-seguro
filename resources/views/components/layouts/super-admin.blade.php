@@ -40,6 +40,11 @@
                                    {{ request()->routeIs('super-admin.clients.*') ? 'border-white' : 'border-transparent hover:border-indigo-300' }}">
                                     Clientes
                                 </a>
+                                <a href="{{ route('super-admin.admins') }}" wire:navigate 
+                                class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out text-white
+                                {{ request()->routeIs('super-admin.admins') ? 'border-white' : 'border-transparent hover:border-indigo-300' }}">
+                                    Super Admins
+                                </a>
                             </div>
                         </div>
 

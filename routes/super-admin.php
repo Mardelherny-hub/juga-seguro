@@ -29,6 +29,9 @@ Route::prefix('super-admin')
         Route::get('/agents/{agent}/transactions', AgentTransactionHistory::class)
             ->name('agents.transactions');
 
+        // Usuarios Super Admin
+        Route::get('/admins', \App\Livewire\SuperAdmin\ManageAdmins::class)->name('admins');
+
         // Aquí irían más rutas de super admin en el futuro
         // Route::get('/reports', Reports::class)->name('reports');
         // Route::get('/settings', Settings::class)->name('settings');
