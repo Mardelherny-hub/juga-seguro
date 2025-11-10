@@ -14,7 +14,7 @@ use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Illuminate\Support\Facades\Hash;
 
-
+/* archivo actual */
 class Login extends Component
 {
     public ?Tenant $tenant = null;
@@ -125,7 +125,7 @@ class Login extends Component
         }
 
         if (!Auth::guard('web')->attempt(
-            ['email' =>$this->email, 'password' => $this->password, 'tenant_id' => $currentTenant->id],
+            ['email' =>$this->credential, 'password' => $this->password, 'tenant_id' => $currentTenant->id],
             $this->remember
         )) {
             RateLimiter::hit($this->throttleKey());
@@ -158,27 +158,27 @@ class Login extends Component
 
         if (!$currentTenant) {
             throw ValidationException::withMessages([
-                'email' =>'No se pudo identificar el cliente.',
+                'credential' =>'No se pudo identificar el cliente.',
             ]);
         }
 
         if (!$player || $player->tenant_id !== $currentTenant->id) {
             RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
-                'email' =>__('Las credenciales no coinciden con nuestros registros.'),
+                'credential' =>__('Las credenciales no coinciden con nuestros registros.'),
             ]);
         }
 
         // Verificar estado de la cuenta
         if ($player->status === 'suspended') {
             throw ValidationException::withMessages([
-                'email' =>__('Tu cuenta está suspendida. Contacta a soporte.'),
+                'credential' =>__('Tu cuenta está suspendida. Contacta a soporte.'),
             ]);
         }
 
         if ($player->status === 'blocked') {
             throw ValidationException::withMessages([
-                'email' =>__('Tu cuenta está bloqueada. Contacta a soporte.'),
+                'credential' =>__('Tu cuenta está bloqueada. Contacta a soporte.'),
             ]);
         }
 
