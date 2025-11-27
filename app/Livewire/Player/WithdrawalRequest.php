@@ -41,13 +41,14 @@ class WithdrawalRequest extends Component
 
     public function open()
     {
-        // Verificar que no tenga NINGUNA solicitud pendiente
-        $hasPendingRequest = $this->player->transactions()
+        // Verificar que no tenga un retiro pendiente
+        $hasPendingWithdrawal = $this->player->transactions()
+            ->where('type', 'withdrawal')
             ->where('status', 'pending')
             ->exists();
 
-        if ($hasPendingRequest) {
-            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada antes de solicitar un retiro.', 'error');
+        if ($hasPendingWithdrawal) {
+            $this->showToast('Ya tienes un retiro pendiente. Espera a que sea procesado.', 'error');
             return;
         }
 

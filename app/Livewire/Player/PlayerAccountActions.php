@@ -170,13 +170,14 @@ class PlayerAccountActions extends Component
 
     public function openUnlockModal()
     {
-        // Verificar que no tenga NINGUNA solicitud pendiente
+        // Verificar que no tenga un desbloqueo pendiente
         $pending = Transaction::where('player_id', $this->player->id)
+            ->where('type', 'account_unlock')
             ->where('status', 'pending')
             ->exists();
 
         if ($pending) {
-            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada.', 'error');
+            $this->showToast('Ya tienes una solicitud de desbloqueo pendiente.', 'error');
             return;
         }
 
@@ -185,13 +186,14 @@ class PlayerAccountActions extends Component
 
     public function openPasswordResetModal()
     {
-        // Verificar que no tenga NINGUNA solicitud pendiente
+        // Verificar que no tenga un cambio de contraseña pendiente
         $pending = Transaction::where('player_id', $this->player->id)
+            ->where('type', 'password_reset')
             ->where('status', 'pending')
             ->exists();
 
         if ($pending) {
-            $this->showToast('Ya tienes una solicitud pendiente. Espera a que sea procesada.', 'error');
+            $this->showToast('Ya tienes una solicitud de cambio de contraseña pendiente.', 'error');
             return;
         }
 

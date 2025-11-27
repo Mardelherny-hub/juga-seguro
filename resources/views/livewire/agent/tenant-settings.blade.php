@@ -27,6 +27,7 @@
         </div>
 
         {{-- URL Casino --}}
+        {{-- Este campo se configura desde el panel de Super Admin
         <div>
             <label for="casino_url" class="block text-sm font-medium text-gray-700">URL del Casino</label>
             <input type="url" id="casino_url" wire:model.defer="casino_url"
@@ -34,7 +35,7 @@
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <p class="mt-1 text-xs text-gray-500">Debe incluir http:// o https://</p>
             @error('casino_url') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
-        </div>
+        </div> --}}
 
         <div class="flex items-center gap-3">
             <button type="button" wire:click="save" wire:loading.attr="disabled"

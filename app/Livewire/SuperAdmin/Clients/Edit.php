@@ -20,6 +20,8 @@ class Edit extends Component
     public $logo;
     public $current_logo_url;
     public $is_active;
+    // URL Casino
+    public $casino_url;
 
     // Campos de suscripción
     public $subscription_type;
@@ -45,6 +47,7 @@ class Edit extends Component
         $this->secondary_color = $tenant->secondary_color;
         $this->current_logo_url = $tenant->logo_url;
         $this->is_active = $tenant->is_active;
+        $this->casino_url = $tenant->casino_url;
         $this->subscription_type = $tenant->subscription_type;
         $this->monthly_fee = $tenant->monthly_fee;
         $this->chips_balance = $tenant->chips_balance;
@@ -62,6 +65,7 @@ class Edit extends Component
             'secondary_color' => 'required|string|max:7',
             'logo' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
+            'casino_url' => 'nullable|url|max:255',
             'subscription_type' => 'required|in:monthly,prepaid',
             'monthly_fee' => 'required_if:subscription_type,monthly|nullable|numeric|min:0',
             'chip_price' => 'required|numeric|min:0',
@@ -103,6 +107,7 @@ class Edit extends Component
             'secondary_color' => $this->secondary_color,
             'logo_url' => $logoUrl,
             'is_active' => $this->is_active,
+            'casino_url' => $this->casino_url,
             'subscription_type' => $this->subscription_type,
             'monthly_fee' => $this->subscription_type === 'monthly' ? $this->monthly_fee : null,
             'chip_price' => $this->chip_price,
@@ -129,6 +134,35 @@ class Edit extends Component
     {
         return view('livewire.super-admin.clients.edit')
             ->layout('components.layouts.super-admin');
+    }
+
+    public function changeAdminPassword()
+    {
+        $this->validate([
+            'admin_password' => 'required|min:8',
+        ], [
+            'admin_password.required' => 'La contraseña es obligatoria',
+            'admin_password.min' => 'La contraseña debe tener al menos 8 caracteres',
+        ]);
+
+        $admin = $this->tenant->users()->where('role', 'admin')->first();
+
+        if (!$admin) {
+            session()->flash('error', 'No se encontró el administrador');
+            return;
+        }
+
+        $admin->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($this->admin_password),
+        ]);
+
+        activity()
+            ->performedOn($admin)
+            ->causedBy(auth()->user())
+            ->log('Contraseña de administrador cambiada por Super Admin');
+
+        $this->admin_password = '';
+        session()->flash('message', 'Contraseña del administrador actualizada correctamente.');
     }
 
     private function generateDnsInstructions(Tenant $tenant): string
