@@ -7,6 +7,8 @@ use App\Models\Tenant;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use App\Models\Transaction;
+use Illuminate\Support\Str;
 
 class Register extends Component
 {
@@ -199,6 +201,24 @@ class Register extends Component
             ->causedBy($player)
             ->withProperties(['referral_code' => $this->referral_code])
             ->log('Jugador registrado');
+        
+        // Crear solicitud automática de vinculación con casino
+        Transaction::create([
+            'tenant_id' => $player->tenant_id,
+            'player_id' => $player->id,
+            'type' => 'account_creation',
+            'amount' => 0,
+            'balance_before' => 0,
+            'balance_after' => 0,
+            'status' => 'pending',
+            'notes' => 'Solicitud automática - Verificar/crear usuario en casino',
+            'transaction_hash' => Str::uuid(),
+        ]);
+
+        activity()
+            ->performedOn($player)
+            ->causedBy($player)
+            ->log('Solicitud de vinculación generada automáticamente');
         
         // Auto-login
         auth()->guard('player')->login($player);

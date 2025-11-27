@@ -23,6 +23,7 @@ class Player extends Authenticatable
         'referral_code',
         'referred_by',
         'status',
+        'casino_linked',
         'last_activity_at',
     ];
 
@@ -37,6 +38,7 @@ class Player extends Authenticatable
         'balance' => 'decimal:2',
         'last_activity_at' => 'datetime',
         'password' => 'hashed',
+        'casino_linked' => 'boolean',
     ];
 
     // Auto-generar código de referido y normalizar username
@@ -187,5 +189,19 @@ class Player extends Authenticatable
             ->where('tenant_id', $this->tenant_id)
             ->where('id', '!=', $this->id)
             ->exists();
+    }
+
+    public function isCasinoLinked(): bool
+    {
+        return $this->casino_linked === true;
+    }
+
+    public function linkCasino(): void
+    {
+        $this->update(['casino_linked' => true]);
+        
+        activity()
+            ->performedOn($this)
+            ->log('Usuario vinculado al casino');
     }
 }

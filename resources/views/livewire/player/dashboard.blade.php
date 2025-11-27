@@ -10,11 +10,30 @@
             Bienvenido, {{ $player->username }}
         </h1>
 
+        {{-- Alerta: Cuenta pendiente de habilitación --}}
+        @if(!$player->casino_linked)
+            <div class="mb-6 bg-yellow-900/30 border-2 border-yellow-600 rounded-xl p-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-yellow-200 mb-1">⏳ Cuenta en proceso de habilitación</h3>
+                        <p class="text-yellow-300 text-sm">
+                            Tu usuario está siendo habilitado por nuestro equipo. Recibirás una notificación cuando puedas comenzar a operar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- Card de Saldo Principal -->
         <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700 shadow-2xl">
     
     <!-- BOTÓN CASINO DESTACADO -->
-    @if($tenant->casino_url)
+    @if($tenant->casino_url && $player->casino_linked)
         <div class="text-center mb-2">
             <span class="text-sm text-gray-400">Tu usuario:</span>
             <span class="text-white font-bold">{{ $player->username }}</span>
@@ -34,25 +53,41 @@
     <!-- GRID 2x2 DE ACCIONES PRINCIPALES -->
     <div class="grid grid-cols-2 gap-3 mb-4">
         <!-- Cargar Saldo -->
-        <button 
-            wire:click="$dispatch('openDepositModal')" 
-            class="flex flex-col items-center justify-center gap-2 p-5 bg-gray-700/50 rounded-xl transition-all hover:bg-gray-700 text-white"
-        >
-            <div class="text-3xl">💰</div>
-            <span class="text-xs font-medium text-center">Cargar Saldo</span>
-        </button>
+        @if($player->casino_linked)
+            <button 
+                wire:click="$dispatch('openDepositModal')" 
+                class="flex flex-col items-center justify-center gap-2 p-5 bg-gray-700/50 rounded-xl transition-all hover:bg-gray-700 text-white"
+            >
+                <div class="text-3xl">💰</div>
+                <span class="text-xs font-medium text-center">Cargar Saldo</span>
+            </button>
+        @else
+            <div class="flex flex-col items-center justify-center gap-2 p-5 bg-gray-700/30 rounded-xl text-gray-500 cursor-not-allowed opacity-50">
+                <div class="text-3xl">💰</div>
+                <span class="text-xs font-medium text-center">Cargar Saldo</span>
+            </div>
+        @endif
 
         <!-- Retirar Fondos -->
-        <button 
-            wire:click="$dispatch('openWithdrawalModal')" 
-            class="flex flex-col items-center justify-center gap-2 p-5 bg-gray-700/50 rounded-xl transition-all hover:bg-gray-700 text-white"
-        >
-            <div class="text-3xl">🏆</div>
-            <span class="text-xs font-medium text-center">Retirar Fondos</span>
-        </button>
+        @if($player->casino_linked)
+            <button 
+                wire:click="$dispatch('openWithdrawalModal')" 
+                class="flex flex-col items-center justify-center gap-2 p-5 bg-gray-700/50 rounded-xl transition-all hover:bg-gray-700 text-white"
+            >
+                <div class="text-3xl">🏆</div>
+                <span class="text-xs font-medium text-center">Retirar Fondos</span>
+            </button>
+        @else
+            <div class="flex flex-col items-center justify-center gap-2 p-5 bg-gray-700/30 rounded-xl text-gray-500 cursor-not-allowed opacity-50">
+                <div class="text-3xl">🏆</div>
+                <span class="text-xs font-medium text-center">Retirar Fondos</span>
+            </div>
+        @endif
 
         <!-- Botones del componente player-account-actions (se integran en el grid) -->
-        @livewire('player.player-account-actions', ['player' => $player])
+        @if($player->casino_linked)
+            @livewire('player.player-account-actions', ['player' => $player])
+        @endif
     </div>
 
     <!-- MENSAJE SI ESTÁ BLOQUEADO -->

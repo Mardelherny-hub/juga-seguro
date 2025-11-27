@@ -91,6 +91,11 @@ class ApproveTransaction extends Component
             // Enviar notificación con credenciales si es solicitud de cuenta
             if ($this->transaction->isAccountRequest()) {
                 $this->notifyPlayerWithCredentials();
+                
+                // Si es creación de cuenta, marcar como vinculado al casino
+                if ($this->transaction->type === 'account_creation') {
+                    $player->linkCasino();
+                }
             }
 
             // Activity log

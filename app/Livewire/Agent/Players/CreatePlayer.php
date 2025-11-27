@@ -88,6 +88,7 @@ class CreatePlayer extends Component
             'balance' => $this->initial_balance ?? 0,
             'referral_code' => $referralCode,
             'status' => 'active',
+            'casino_linked' => true,
         ]);
 
         // Activity log
