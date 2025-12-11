@@ -95,7 +95,7 @@
                         </div>
 
                         <!-- Casino URL -->
-                        <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-5 border-2 border-purple-200 dark:border-purple-700">
+                        {{-- <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-5 border-2 border-purple-200 dark:border-purple-700">
                             <div class="flex items-start mb-4">
                                 <div class="flex-shrink-0">
                                     <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@
                                     💡 Incluye el protocolo (https://) y la URL completa de tu casino
                                 </p>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Info adicional -->
                         <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
@@ -141,7 +141,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <p class="text-sm text-blue-800 dark:text-blue-200">
-                                        <strong>Importante:</strong> Los jugadores verán un botón para contactar por WhatsApp y otro para ir al casino directamente desde su panel.
+                                        <strong>Importante:</strong> Los jugadores verán un botón para contactar por WhatsApp {{-- y otro para ir al casino --}} directamente desde su panel.
                                     </p>
                                 </div>
                             </div>

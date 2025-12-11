@@ -139,7 +139,7 @@ class PlayerAccountActions extends Component
             'balance_before' => $this->player->balance,
             'balance_after' => $this->player->balance,
             'status' => 'pending',
-            'notes' => 'Solicitud de cambio de contraseña - Nueva contraseña: bet123',
+            'notes' => 'Solicitud de cambio de contraseña - Nueva contraseña: bet123', 
             'transaction_hash' => Str::uuid(),
         ]);
 

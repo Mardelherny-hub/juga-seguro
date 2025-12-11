@@ -89,7 +89,7 @@
                                     </p>
                                 @elseif($transaction->type === 'password_reset')
                                     <p class="text-sm text-blue-700 dark:text-blue-300">
-                                        ✓ Cambiar contraseña de <strong>{{ $transaction->player->username }} ({{ $transaction->player->name }})</strong> a: <strong class="text-red-600">bet123</strong><br>
+                                        ✓ Cambiar contraseña de <strong>{{ $transaction->player->username }} ({{ $transaction->player->name }})</strong> a: <strong class="text-red-600">bet123</strong><br> 
                                         ✓ Realizar el cambio en el panel externo del casino<br>
                                         ✓ Una vez cambiada, aprobar esta solicitud
                                     </p>
