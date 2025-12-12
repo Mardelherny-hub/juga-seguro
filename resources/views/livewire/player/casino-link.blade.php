@@ -79,26 +79,21 @@
                         >
                             Cancelar
                         </button>
-                        <button 
-                            wire:click="goToCasino"
-                            class="px-6 py-2 text-white rounded-lg hover:opacity-90 transition font-semibold"
+                        <a 
+                            href="{{ $tenant->casino_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onclick="@this.logCasinoAccess()"
+                            class="px-6 py-2 text-white rounded-lg hover:opacity-90 transition font-semibold inline-block text-center"
                             style="background: linear-gradient(135deg, {{ $tenant->primary_color }} 0%, {{ $tenant->secondary_color }} 100%);"
                         >
                             Ir al Casino 🎰
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     @endif
 
-    {{-- Script para redirección --}}
-    <script>
-        document.addEventListener('livewire:init', () => {
-            Livewire.on('redirectToCasino', (event) => {
-                window.open(event.url, '_blank');
-                @this.closeModal();
-            });
-        });
-    </script>
+   
 </div>

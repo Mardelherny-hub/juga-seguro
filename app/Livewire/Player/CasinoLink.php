@@ -28,16 +28,14 @@ class CasinoLink extends Component
         $this->showModal = false;
     }
 
-    public function goToCasino()
+    public function logCasinoAccess()
     {
-        // Registrar acceso en activity log
         activity()
             ->performedOn($this->player)
             ->causedBy($this->player)
             ->log('Accedió al casino');
-
-        // Redirigir en JavaScript
-        $this->dispatch('redirectToCasino', url: $this->tenant->casino_url);
+        
+        $this->closeModal();
     }
 
     public function render()
