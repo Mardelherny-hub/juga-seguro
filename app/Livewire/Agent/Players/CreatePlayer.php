@@ -22,6 +22,7 @@ class CreatePlayer extends Component
     public $phone = '';
     public $initial_balance = 0;
     public $username = '';
+    public $password = '';
 
     #[On('openCreatePlayer')]
     
@@ -59,6 +60,7 @@ class CreatePlayer extends Component
                     ->where('tenant_id', $tenantId)
             ],
             'initial_balance' => 'nullable|numeric|min:0',
+            'password' => 'nullable|min:6',
         ], [
             'name.required' => 'El nombre es obligatorio',
             'name.min' => 'El nombre debe tener al menos 3 caracteres',
@@ -73,6 +75,7 @@ class CreatePlayer extends Component
             'phone.unique' => 'Este teléfono ya está registrado',
             'initial_balance.numeric' => 'El saldo debe ser un número',
             'initial_balance.min' => 'El saldo no puede ser negativo',
+            'password.min' => 'La contraseña debe tener al menos 6 caracteres',
         ]);
 
         // Generar código de referido único
@@ -91,6 +94,7 @@ class CreatePlayer extends Component
             'referral_code' => $referralCode,
             'status' => 'active',
             'casino_linked' => true,
+            'password' => $this->password ? bcrypt($this->password) : null,
         ]);
 
         // Activity log
@@ -111,7 +115,7 @@ class CreatePlayer extends Component
     public function closeModal()
     {
         $this->showModal = false;
-        $this->reset(['name', 'email', 'phone', 'initial_balance', 'username']);
+        $this->reset(['name', 'email', 'phone', 'initial_balance', 'username', 'password']);
         $this->resetValidation();
     }
 

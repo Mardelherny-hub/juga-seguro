@@ -84,6 +84,22 @@
                                 @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
+                            {{-- Contraseña --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Contraseña (opcional)
+                                </label>
+                                <input 
+                                    type="password" 
+                                    wire:model="password"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white @error('password') border-red-500 @enderror"
+                                    placeholder="Mínimo 6 caracteres"
+                                >
+                                @error('password')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             {{-- Saldo Inicial --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
