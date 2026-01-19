@@ -120,6 +120,10 @@ new class extends Component
                     @livewire('components.pending-transactions-badge')
                 </div>
             </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="route('messages')" :active="request()->routeIs('messages')" wire:navigate>
+                {{ __('Mensajes') }}
+            </x-responsive-nav-link>
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

@@ -226,13 +226,19 @@
                                 style="{{ request()->routeIs('agent.bonuses') ? 'border-color: ' . $currentTenant->primary_color : '' }}">
                                     Bonos
                                 </a>
-                            </div>
                             <!-- Cuentas Bancarias -->
                             <a href="{{ route('dashboard.bank-accounts') }}" wire:navigate 
                                 class="block w-full ps-3 pe-4 py-2 border-l-4 text-base font-medium transition
                                 {{ request()->routeIs('dashboard.bank-accounts') ? 'bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700' }}"
                                 style="{{ request()->routeIs('dashboard.bank-accounts') ? 'border-color: ' . $currentTenant->primary_color : '' }}">
                                     Cuentas Bancarias
+                            </a>
+                            <!-- Mensajes -->
+                            <a href="{{ route('messages') }}" wire:navigate 
+                                class="block w-full ps-3 pe-4 py-2 border-l-4 text-base font-medium transition
+                                {{ request()->routeIs('messages') ? 'bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200' : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700' }}"
+                                style="{{ request()->routeIs('messages') ? 'border-color: ' . $currentTenant->primary_color : '' }}">
+                                    Mensajes
                             </a>
                             <!-- Ruleta -->
                             {{-- <a href="{{ route('wheel-config') }}" wire:navigate 

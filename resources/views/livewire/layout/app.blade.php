@@ -107,6 +107,9 @@
                         <x-responsive-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')" wire:navigate>
                             {{ __('Transacciones') }}
                         </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('messages')" :active="request()->routeIs('messages')" wire:navigate>
+                            {{ __('Mensajes') }}
+                        </x-responsive-nav-link>
                     </div>
 
                     <!-- Responsive Settings Options -->
