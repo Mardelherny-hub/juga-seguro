@@ -64,7 +64,17 @@ class IdentifyTenant
 
             \Log::info('No se encontró tenant, es ruta pública?', ['is_public' => $this->isPublicRoute($request)]);
         
-        // PASO 3: Si NO hay tenant y estamos en ruta pública (login), continuar sin tenant
+        // PASO 3: Si no hay subdominio (dominio principal), cargar tenant por defecto (ID=1)
+        if (!$subdomain) {
+            $defaultTenant = Tenant::where('id', 1)->where('is_active', true)->first();
+            if ($defaultTenant) {
+                $this->setTenant($request, $defaultTenant);
+                \Log::info('Tenant por defecto cargado', ['tenant_id' => $defaultTenant->id]);
+                return $next($request);
+            }
+        }
+        
+        // PASO 4: Si NO hay tenant y estamos en ruta pública (login), continuar sin tenant
         if ($this->isPublicRoute($request)) {
             return $next($request);
         }
