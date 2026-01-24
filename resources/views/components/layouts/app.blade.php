@@ -4,6 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <link rel="manifest" href="/manifest.json">
+
         <title>{{ $currentTenant->name }} - Panel de Gestión</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -174,6 +177,10 @@
                                                 Perfil
                                             </a>
                                         @endif
+
+                                        <!-- Notificaciones e Instalar App -->
+                                        <x-push-notification-button />
+                                        
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
                                             <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -291,6 +298,30 @@
 
         {{-- Panel de Actividad en Tiempo Real --}}
         @livewire('agent.activity-panel')
+
+        <!-- Push Notifications -->
+        <script>
+            window.pushRoutes = {
+                subscribe: '{{ route("push.subscribe") }}',
+                unsubscribe: '{{ route("push.unsubscribe") }}',
+                vapidKey: '{{ route("push.vapid") }}'
+            };
+        </script>
+        <script src="/js/push-notifications.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', async function() {
+                if (await PushNotifications.init()) {
+                    const isSubscribed = await PushNotifications.isSubscribed();
+                    if (!isSubscribed && Notification.permission === 'default') {
+                        setTimeout(() => {
+                            if (confirm('¿Deseas recibir notificaciones de nuevas transacciones?')) {
+                                PushNotifications.subscribe();
+                            }
+                        }, 5000);
+                    }
+                }
+            });
+        </script>
         
     </body>
 </html>

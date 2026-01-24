@@ -49,4 +49,10 @@ Route::prefix('player')
             request()->session()->regenerateToken();
             return redirect()->route('player.login');
         })->name('logout');
+
+        // Push Notifications
+        Route::post('/push/subscribe', [App\Http\Controllers\PushSubscriptionController::class, 'subscribe'])->name('push.subscribe');
+        Route::post('/push/unsubscribe', [App\Http\Controllers\PushSubscriptionController::class, 'unsubscribe'])->name('push.unsubscribe');
+        Route::get('/push/vapid-key', [App\Http\Controllers\PushSubscriptionController::class, 'getVapidPublicKey'])->name('push.vapid');
+        
     });

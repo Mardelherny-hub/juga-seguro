@@ -27,6 +27,12 @@ Route::middleware(['auth', 'tenant.identify'])->group(function () {
     // Route panel de mensajes del agente
     Route::get('/messages', fn() => view('agent.messages'))->name('messages');
 
+    // Push Notifications
+    Route::post('/push/subscribe', [App\Http\Controllers\PushSubscriptionController::class, 'subscribe'])->name('push.subscribe');
+    Route::post('/push/unsubscribe', [App\Http\Controllers\PushSubscriptionController::class, 'unsubscribe'])->name('push.unsubscribe');
+    Route::get('/push/vapid-key', [App\Http\Controllers\PushSubscriptionController::class, 'getVapidPublicKey'])->name('push.vapid');
+    
+
      // RUTAS SOLO PARA ADMIN
     Route::middleware(['admin.only'])->group(function () {
         // Gestión de Bonos (solo admin)

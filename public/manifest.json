@@ -1,0 +1,15 @@
+{
+    "name": "Panel de Gestión",
+    "short_name": "Panel",
+    "start_url": "/player/dashboard",
+    "display": "standalone",
+    "background_color": "#1f2937",
+    "theme_color": "#6366f1",
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "64x64",
+            "type": "image/x-icon"
+        }
+    ]
+}

@@ -6,16 +6,19 @@ use App\Models\Transaction;
 use App\Models\Player;
 use App\Services\MessageService;
 use App\Services\BonusService;
+use App\Services\WebPushService;
 
 class TransactionObserver
 {
     protected $messageService;
     protected $bonusService;
+    protected $webPushService;
 
     public function __construct(MessageService $messageService, BonusService $bonusService)
     {
         $this->messageService = $messageService;
         $this->bonusService = $bonusService;
+        $this->webPushService = $webPushService;
     }
 
     /**
@@ -35,6 +38,16 @@ class TransactionObserver
 
         if ($transaction->type === 'withdrawal') {
             $this->messageService->notifyWithdrawalRequest($transaction);
+        }
+
+        // Push notification a agentes del tenant
+        if (in_array($transaction->type, ['deposit', 'withdrawal'])) {
+            $this->webPushService->sendToTenantUsers(
+                $transaction->player->tenant,
+                '💰 Nueva transacción pendiente',
+                ucfirst($transaction->type === 'deposit' ? 'Depósito' : 'Retiro') . ' de $' . number_format($transaction->amount, 2) . ' - ' . $transaction->player->name,
+                '/dashboard/transactions/pending'
+            );
         }
 
         // Notificaciones para solicitudes de cuenta
