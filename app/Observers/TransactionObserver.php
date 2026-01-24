@@ -14,7 +14,7 @@ class TransactionObserver
     protected $bonusService;
     protected $webPushService;
 
-    public function __construct(MessageService $messageService, BonusService $bonusService)
+    public function __construct(MessageService $messageService, BonusService $bonusService, WebPushService $webPushService)
     {
         $this->messageService = $messageService;
         $this->bonusService = $bonusService;
