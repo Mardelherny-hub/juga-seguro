@@ -6,9 +6,16 @@ use App\Models\Player;
 use App\Models\PlayerMessage;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\WebPushService;
 
 class MessageService
 {
+    protected WebPushService $webPushService;
+
+    public function __construct(WebPushService $webPushService)
+    {
+        $this->webPushService = $webPushService;
+    }
     /**
      * Enviar mensaje del sistema (automático)
      */
@@ -53,6 +60,18 @@ class MessageService
             ->causedBy($player)
             ->log('Mensaje enviado por jugador');
 
+            // Push notification a agentes del tenant
+            try {
+                $this->webPushService->sendToTenantUsers(
+                    $player->tenant,
+                    '💬 Nuevo mensaje de ' . $player->name,
+                    \Str::limit($message, 50),
+                    '/dashboard/messages/' . $player->id
+                );
+            } catch (\Exception $e) {
+                // Silenciar error de push
+            }
+
         return $playerMessage;
     }
 
@@ -80,6 +99,18 @@ class MessageService
             ->performedOn($playerMessage)
             ->causedBy($agent)
             ->log('Mensaje enviado por agente');
+
+            // Push notification al jugador
+            try {
+                $this->webPushService->sendToPlayer(
+                    $player,
+                    '💬 Nuevo mensaje del operador',
+                    \Str::limit($message, 50),
+                    '/messages'
+                );
+            } catch (\Exception $e) {
+                // Silenciar error de push
+            }
 
         return $playerMessage;
     }
