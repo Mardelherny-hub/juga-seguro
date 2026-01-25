@@ -80,7 +80,7 @@ class CreatePlayer extends Component
 
         // Generar código de referido único
         do {
-            $referralCode = strtoupper(Str::random(6));
+            $referralCode = strtoupper(Str::random(8));
         } while (Player::where('referral_code', $referralCode)->exists());
 
         // Crear jugador

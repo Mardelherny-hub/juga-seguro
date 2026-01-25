@@ -81,13 +81,24 @@ class ApproveTransaction extends Component
                 $player->decrement('balance', $this->transaction->amount);
             }
 
+            // Preparar notas con credenciales si aplica
+            $finalNotes = $this->notes ?: $this->transaction->notes;
+
+            if ($this->transaction->type === 'account_creation') {
+                $finalNotes = "Usuario: {$this->username} | Contraseña: {$this->password}";
+            } elseif ($this->transaction->type === 'password_reset') {
+                $finalNotes = "Nueva contraseña: {$this->password}";
+            } elseif ($this->transaction->type === 'account_unlock') {
+                $finalNotes = "Cuenta desbloqueada correctamente";
+            }
+
             // Actualizar transacción
             $this->transaction->update([
                 'status' => 'completed',
                 'processed_by' => auth()->id(),
                 'processed_at' => now(),
                 'balance_after' => $player->balance,
-                'notes' => $this->notes ?: $this->transaction->notes,
+                'notes' => $finalNotes,
             ]);
 
             // Enviar notificación con credenciales si es solicitud de cuenta
