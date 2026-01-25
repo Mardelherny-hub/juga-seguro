@@ -63,7 +63,7 @@
                                 Bono de Bienvenida
                             </h4>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Se otorga automáticamente cuando un nuevo jugador se registra
+                                Se otorga automáticamente en el primer depósito del jugador
                             </p>
                         </div>
 
@@ -81,31 +81,85 @@
                             </label>
                         </div>
 
-                        <!-- Input Monto -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Monto del Bono
-                            </label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 dark:text-gray-400 text-lg">
-                                    $
-                                </span>
+                        <!-- Tipo de bono: Fijo o Porcentaje -->
+                        <div class="mb-4">
+                            <label class="flex items-center cursor-pointer">
                                 <input 
-                                    type="number" 
-                                    wire:model="welcome_bonus_amount"
-                                    step="0.01"
-                                    min="0"
-                                    class="pl-8 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
-                                    placeholder="0.00"
+                                    type="checkbox" 
+                                    wire:model.live="welcome_bonus_is_percentage"
+                                    class="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
                                 >
-                            </div>
-                            @error('welcome_bonus_amount')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
-                            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                                💡 El checkbox activa o desactiva el bono automático para nuevos registros
+                                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-white">
+                                    Bono por porcentaje del primer depósito
+                                </span>
+                            </label>
+                            <p class="mt-1 ml-8 text-xs text-gray-500 dark:text-gray-400">
+                                Si está activo, el bono será un porcentaje del monto depositado
                             </p>
                         </div>
+
+                        <!-- Input Monto/Porcentaje -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {{ $welcome_bonus_is_percentage ? 'Porcentaje del Bono' : 'Monto del Bono' }}
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 dark:text-gray-400 text-lg">
+                                        {{ $welcome_bonus_is_percentage ? '%' : '$' }}
+                                    </span>
+                                    <input 
+                                        type="number" 
+                                        wire:model="welcome_bonus_amount"
+                                        step="{{ $welcome_bonus_is_percentage ? '1' : '0.01' }}"
+                                        min="0"
+                                        max="{{ $welcome_bonus_is_percentage ? '100' : '999999' }}"
+                                        class="pl-8 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
+                                        placeholder="{{ $welcome_bonus_is_percentage ? '20' : '0.00' }}"
+                                    >
+                                </div>
+                                @error('welcome_bonus_amount')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            @if($welcome_bonus_is_percentage)
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Tope máximo (opcional)
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 dark:text-gray-400 text-lg">
+                                        $
+                                    </span>
+                                    <input 
+                                        type="number" 
+                                        wire:model="welcome_bonus_max"
+                                        step="0.01"
+                                        min="0"
+                                        class="pl-8 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50"
+                                        placeholder="5000"
+                                    >
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    Deja vacío para sin límite
+                                </p>
+                            </div>
+                            @endif
+                        </div>
+
+                        <!-- Ejemplo -->
+                        @if($welcome_bonus_is_percentage && $welcome_bonus_amount > 0)
+                        <div class="mt-4 p-3 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                            <p class="text-sm text-green-800 dark:text-green-200">
+                                <strong>Ejemplo:</strong> Si un jugador deposita $10,000, recibirá 
+                                <strong>${{ number_format(10000 * ($welcome_bonus_amount / 100), 2) }}</strong> de bono
+                                @if($welcome_bonus_max)
+                                    (máx. ${{ number_format($welcome_bonus_max, 2) }})
+                                @endif
+                            </p>
+                        </div>
+                        @endif
                     </div>
 
                     <!-- Bono de Referido -->

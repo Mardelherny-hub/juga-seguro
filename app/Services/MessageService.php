@@ -64,7 +64,7 @@ class MessageService
             try {
                 $this->webPushService->sendToTenantUsers(
                     $player->tenant,
-                    '💬 Nuevo mensaje de ' . $player->name,
+                    '💬 Nuevo mensaje de ' . $player->display_name,
                     \Str::limit($message, 50),
                     '/dashboard/messages/' . $player->id
                 );
@@ -187,7 +187,7 @@ class MessageService
         // Mensaje para el agente (mismo mensaje para ambos)
         $this->sendSystemMessage(
             $transaction->player,
-            "🔔 Nueva solicitud de depósito de $" . number_format($transaction->amount, 2) . " del jugador {$transaction->player->name}.",
+            "🔔 Nueva solicitud de depósito de $" . number_format($transaction->amount, 2) . " del jugador {$transaction->player->display_name}.",
             'transaction',
             $transaction
         );

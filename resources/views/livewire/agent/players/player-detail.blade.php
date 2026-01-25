@@ -19,7 +19,7 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-white">{{ $player->name }}</h3>
+                                    <h3 class="text-xl font-bold text-white">{{ $$player->display_name }}</h3>
                                     <p class="text-blue-100 text-sm">ID: #{{ $player->id }}</p>
                                 </div>
                             </div>

@@ -204,4 +204,12 @@ class Player extends Authenticatable
             ->performedOn($this)
             ->log('Usuario vinculado al casino');
     }
+
+    /**
+     * Obtener el nombre para mostrar (username preferido, name como fallback)
+     */
+    public function getDisplayNameAttribute(): string
+    {
+        return $this->username ?: $this->name;
+    }
 }

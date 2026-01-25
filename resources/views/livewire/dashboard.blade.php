@@ -116,7 +116,7 @@
                                 @forelse($recentTransactions as $transaction)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                            {{ $transaction->player->name }}
+                                            {{ $transaction->$player->display_name }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 

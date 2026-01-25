@@ -39,6 +39,8 @@ class Tenant extends Model
         'maintenance_mode',
         'maintenance_message',
         'maintenance_block_operations',
+        'welcome_bonus_is_percentage',
+        'welcome_bonus_max',
     ];
 
     protected $casts = [
@@ -51,6 +53,8 @@ class Tenant extends Model
         'referral_bonus_target' => 'string',
         'maintenance_mode' => 'boolean',
         'maintenance_block_operations' => 'boolean',
+        'welcome_bonus_is_percentage' => 'boolean',
+        'welcome_bonus_max' => 'decimal:2',
     ];
 
     // Relaciones

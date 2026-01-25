@@ -64,7 +64,7 @@ class AgentBonuses extends Component
             $this->bonusDescription
         );
 
-        session()->flash('success', "Bono de \${$this->bonusAmount} otorgado a {$player->name}");
+        session()->flash('success', "Bono de \${$this->bonusAmount} otorgado a {$player->display_name}");
         
         $this->closeGrantModal();
     }

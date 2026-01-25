@@ -192,7 +192,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 <div>
-                                                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $player->name }}</div>
+                                                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $$player->display_name }}</div>
                                                     <div class="text-xs text-gray-500 dark:text-gray-400">{{ $player->username }}</div>
                                                     @if($player->referrals_count > 0)
                                                         <div class="text-xs text-blue-600">
@@ -243,7 +243,7 @@
                                                 @if($player->status === 'active')
                                                     <button 
                                                         wire:click="togglePlayerStatus({{ $player->id }}, 'suspend')"
-                                                        wire:confirm="¿Suspender a {{ $player->name }}?"
+                                                        wire:confirm="¿Suspender a {{ $$player->display_name }}?"
                                                         class="text-yellow-600 hover:text-yellow-900"
                                                         title="Suspender"
                                                     >
@@ -254,7 +254,7 @@
                                                 @else
                                                     <button 
                                                         wire:click="togglePlayerStatus({{ $player->id }}, 'activate')"
-                                                        wire:confirm="¿Activar a {{ $player->name }}?"
+                                                        wire:confirm="¿Activar a {{ $$player->display_name }}?"
                                                         class="text-green-600 hover:text-green-900"
                                                         title="Activar"
                                                     >
@@ -267,7 +267,7 @@
                                                 @if($player->status !== 'blocked')
                                                     <button 
                                                         wire:click="togglePlayerStatus({{ $player->id }}, 'block')"
-                                                        wire:confirm="¿Bloquear a {{ $player->name }}?"
+                                                        wire:confirm="¿Bloquear a {{ $$player->display_name }}?"
                                                         class="text-red-600 hover:text-red-900"
                                                         title="Bloquear"
                                                     >
@@ -340,7 +340,7 @@
                                             #{{ $transaction->id }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                            {{ $transaction->player->name }}
+                                            {{ $transaction->$player->display_name }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <span class="px-2 py-1 rounded-full text-xs font-semibold

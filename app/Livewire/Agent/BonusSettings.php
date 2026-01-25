@@ -13,6 +13,8 @@ class BonusSettings extends Component
     // Bono de bienvenida
     public $welcome_bonus_enabled = false;
     public $welcome_bonus_amount = 0;
+    public $welcome_bonus_is_percentage = false;
+    public $welcome_bonus_max = null;
     
     // Bono de referido
     public $referral_bonus_enabled = false;
@@ -34,6 +36,8 @@ class BonusSettings extends Component
         if ($tenant) {
             $this->welcome_bonus_enabled = (bool) $tenant->welcome_bonus_enabled;
             $this->welcome_bonus_amount = (float) $tenant->welcome_bonus_amount;
+            $this->welcome_bonus_is_percentage = (bool) $tenant->welcome_bonus_is_percentage;
+            $this->welcome_bonus_max = $tenant->welcome_bonus_max;
             $this->referral_bonus_enabled = (bool) $tenant->referral_bonus_enabled;
             $this->referral_bonus_amount = (float) $tenant->referral_bonus_amount;
             $this->referral_bonus_target = $tenant->referral_bonus_target ?? 'both';
@@ -90,6 +94,8 @@ class BonusSettings extends Component
         $tenant->update([
             'welcome_bonus_enabled' => $this->welcome_bonus_enabled,
             'welcome_bonus_amount' => $this->welcome_bonus_amount ?? 0,
+            'welcome_bonus_is_percentage' => $this->welcome_bonus_is_percentage,
+            'welcome_bonus_max' => $this->welcome_bonus_max,
             'referral_bonus_enabled' => $this->referral_bonus_enabled,
             'referral_bonus_amount' => $this->referral_bonus_amount ?? 0,
             'referral_bonus_target' => $this->referral_bonus_target,

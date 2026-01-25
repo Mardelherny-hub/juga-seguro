@@ -94,10 +94,10 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                                {{ substr($player->name, 0, 1) }}
+                                {{ substr($$player->display_name, 0, 1) }}
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $player->name }}</p>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $$player->display_name }}</p>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">ID: {{ $player->id }}</p>
                             </div>
                         </div>
@@ -150,7 +150,7 @@
                 
                 <div class="mb-4 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
                     <p class="text-sm text-blue-900 dark:text-blue-100">
-                        <span class="font-semibold">Jugador:</span> {{ $player->name }}
+                        <span class="font-semibold">Jugador:</span> {{ $$player->display_name }}
                     </p>
                     {{-- <p class="text-sm text-blue-900 dark:text-blue-100">
                         <span class="font-semibold">Saldo actual:</span> ${{ number_format($player->balance, 2) }}

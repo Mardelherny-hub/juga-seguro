@@ -44,7 +44,7 @@ class ActivityPanel extends Component
                 'type' => 'transaction',
                 'status' => $transaction->status,
                 'transaction_type' => $transaction->type,
-                'player_name' => $transaction->player->name,
+                'player_name' => $transaction->player->display_name,
                 'amount' => $transaction->amount,
                 'time' => $transaction->updated_at->diffForHumans(),
                 'is_new' => $transaction->updated_at->isAfter(now()->subSeconds(10))

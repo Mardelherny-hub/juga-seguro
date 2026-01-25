@@ -46,6 +46,7 @@ class AgentPlayerMessages extends Component
     {
         $this->selectedPlayerId = $playerId;
         $this->markMessagesAsRead();
+        $this->dispatch('playerSelected');
     }
 
     public function markMessagesAsRead()

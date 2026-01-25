@@ -38,7 +38,7 @@
                         <div class="flex items-center justify-between mb-3">
                             <div>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">Jugador</p>
-                                <p class="font-semibold text-gray-900 dark:text-white">{{ $transaction->player->name }}</p>
+                                <p class="font-semibold text-gray-900 dark:text-white">{{ $transaction->$player->display_name }}</p>
                             </div>
                             <div class="text-right">
                                 @if($transaction->type === 'deposit')

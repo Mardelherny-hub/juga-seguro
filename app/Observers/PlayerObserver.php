@@ -27,8 +27,9 @@ class PlayerObserver
         
         $tenant = $player->tenant;
         
-        // 1. Bono de bienvenida (si está habilitado)
-        if ($tenant && $tenant->welcome_bonus_enabled && $tenant->welcome_bonus_amount > 0) {
+        // 1. Bono de bienvenida SOLO si es monto fijo (no porcentaje)
+        // Si es porcentaje, se otorga en TransactionObserver al completar primer depósito
+        if ($tenant && $tenant->welcome_bonus_enabled && $tenant->welcome_bonus_amount > 0 && !$tenant->welcome_bonus_is_percentage) {
             $this->bonusService->grantWelcomeBonus($player, $tenant->welcome_bonus_amount);
         }
         

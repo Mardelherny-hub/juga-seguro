@@ -88,15 +88,15 @@ class Show extends Component
         switch($action) {
             case 'activate':
                 $player->activate();
-                session()->flash('message', "Jugador {$player->name} activado correctamente");
+                session()->flash('message', "Jugador {$player->display_name} activado correctamente");
                 break;
             case 'suspend':
                 $player->suspend('Suspendido por Super Admin');
-                session()->flash('message', "Jugador {$player->name} suspendido correctamente");
+                session()->flash('message', "Jugador {$player->display_name} suspendido correctamente");
                 break;
             case 'block':
                 $player->block('Bloqueado por Super Admin');
-                session()->flash('message', "Jugador {$player->name} bloqueado correctamente");
+                session()->flash('message', "Jugador {$player->display_name} bloqueado correctamente");
                 break;
         }
         

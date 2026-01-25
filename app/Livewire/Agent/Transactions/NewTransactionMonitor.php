@@ -41,7 +41,7 @@ class NewTransactionMonitor extends Component
                         'password_reset' => 'CAMBIAR CONTRASEÑA',
                         default => 'SOLICITUD'
                     };
-                $message = "🔔 Nuevo {$typeText} de {$transaction->player->name} por \${$transaction->amount}";
+                $message = "🔔 Nuevo {$typeText} de {$transaction->player->display_name} por \${$transaction->amount}";
                 
                 $this->dispatch('notify', [
                     'type' => 'transaction',

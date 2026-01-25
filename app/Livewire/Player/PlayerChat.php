@@ -78,7 +78,7 @@ class PlayerChat extends Component
             'unreadCount' => $this->getUnreadCount(),
             'whatsappNumber' => $tenant->whatsapp_number,
             'whatsappLink' => $tenant->whatsapp_number 
-                ? 'https://wa.me/' . $tenant->whatsapp_number . '?text=' . urlencode("Hola, soy {$player->name} (ID: {$player->id}). Necesito ayuda con:")
+                ? 'https://wa.me/' . $tenant->whatsapp_number . '?text=' . urlencode("Hola, soy {$player->display_name} (ID: {$player->id}). Necesito ayuda con:")
                 : null,
         ]);
     }

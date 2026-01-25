@@ -134,7 +134,7 @@ class TransactionHistory extends Component
                 fputcsv($file, [
                     $transaction->id,
                     $transaction->created_at->format('d/m/Y H:i:s'),
-                    $transaction->player->name,
+                    $transaction->player->display_name,
                     $transaction->type === 'deposit' ? 'Depósito' : 'Retiro',
                     number_format($transaction->amount, 2),
                     match($transaction->status) {
