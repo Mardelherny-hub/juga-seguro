@@ -27,9 +27,11 @@ class WebPushService
     public function sendToSubscription(PushSubscription $subscription, string $title, string $body, string $url = '/'): bool
     {
         $payload = json_encode([
-            'title' => $title,
+            'title' => 'Juga Seguro - ' . $title,
             'body' => $body,
             'url' => $url,
+            'icon' => '/android-chrome-192x192.png',
+            'badge' => '/favicon-32x32.png',
             'tag' => 'notification-' . time(),
         ]);
 
