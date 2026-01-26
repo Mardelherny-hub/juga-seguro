@@ -111,7 +111,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div>
-                                        <div class="text-sm font-medium text-gray-900">{{ $$player->display_name }}</div>
+                                        <div class="text-sm font-medium text-gray-900">{{ $player->display_name }}</div>
                                         @if($player->referrals_count > 0)
                                             <div class="text-xs text-blue-600">
                                                 👥 {{ $player->referrals_count }} referido{{ $player->referrals_count > 1 ? 's' : '' }}

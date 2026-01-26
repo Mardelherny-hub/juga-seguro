@@ -20,7 +20,7 @@
                                 </h3>
                                 <div class="mt-4">
                                     <p class="text-sm text-gray-500 mb-4">
-                                        ¿Estás seguro de suspender la cuenta de <strong>{{ $$player->display_name }}</strong>?
+                                        ¿Estás seguro de suspender la cuenta de <strong>{{ $player->display_name }}</strong>?
                                     </p>
                                     
                                     <div class="mb-4">
@@ -86,7 +86,7 @@
                                     </div>
                                     
                                     <p class="text-sm text-gray-500 mb-4">
-                                        ¿Estás seguro de bloquear la cuenta de <strong>{{ $$player->display_name }}</strong>?
+                                        ¿Estás seguro de bloquear la cuenta de <strong>{{ $player->display_name }}</strong>?
                                     </p>
                                     
                                     <div class="mb-4">
@@ -149,7 +149,7 @@
                                 </h3>
                                 <div class="mt-2">
                                     <p class="text-sm text-gray-500">
-                                        ¿Estás seguro de activar la cuenta de <strong>{{ $$player->display_name }}</strong>?
+                                        ¿Estás seguro de activar la cuenta de <strong>{{ $player->display_name }}</strong>?
                                     </p>
                                 </div>
                             </div>

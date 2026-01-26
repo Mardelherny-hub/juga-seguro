@@ -210,6 +210,6 @@ class Player extends Authenticatable
      */
     public function getDisplayNameAttribute(): string
     {
-        return $this->username ?: $this->name;
+        return $this->username ?: $this->name ?: 'Sin nombre';
     }
 }

@@ -78,18 +78,18 @@
                                 
                                 @if($transaction->type === 'account_creation')
                                     <p class="text-sm text-blue-700 dark:text-blue-300">
-                                        ✓ Crear usuario <strong>{{ $transaction->player->username }} ({{ $transaction->$player->display_name }})</strong> en el panel externo del casino<br>
+                                        ✓ Crear usuario <strong>{{ $transaction->player->username }} ({{ $transaction->player->display_name }})</strong> en el panel externo del casino<br>
                                         ✓ Asignar nickname y contraseña<br>
                                         ✓ Una vez creado, aprobar esta solicitud e ingresar las credenciales en las notas
                                     </p>
                                 @elseif($transaction->type === 'account_unlock')
                                     <p class="text-sm text-blue-700 dark:text-blue-300">
-                                        ✓ Desbloquear usuario <strong>{{ $transaction->player->username }} ({{ $transaction->$player->display_name }})</strong> en el panel externo del casino<br>
+                                        ✓ Desbloquear usuario <strong>{{ $transaction->player->username }} ({{ $transaction->player->display_name }})</strong> en el panel externo del casino<br>
                                         ✓ Una vez desbloqueado, aprobar esta solicitud
                                     </p>
                                 @elseif($transaction->type === 'password_reset')
                                     <p class="text-sm text-blue-700 dark:text-blue-300">
-                                        ✓ Cambiar contraseña de <strong>{{ $transaction->player->username }} ({{ $transaction->$player->display_name }})</strong> a: <strong class="text-red-600">bet123</strong><br> 
+                                        ✓ Cambiar contraseña de <strong>{{ $transaction->player->username }} ({{ $transaction->player->display_name }})</strong> a: <strong class="text-red-600">bet123</strong><br> 
                                         ✓ Realizar el cambio en el panel externo del casino<br>
                                         ✓ Una vez cambiada, aprobar esta solicitud
                                     </p>

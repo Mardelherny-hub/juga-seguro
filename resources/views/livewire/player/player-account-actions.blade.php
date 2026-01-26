@@ -119,7 +119,7 @@
                             <h3 class="text-lg leading-6 font-semibold text-gray-900 dark:text-white">Desbloquear Usuario</h3>
                             <div class="mt-3">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    Se generará una solicitud para desbloquear al usuario <strong>{{ $$player->display_name }}</strong> en la plataforma de juego.
+                                    Se generará una solicitud para desbloquear al usuario <strong>{{ $player->display_name }}</strong> en la plataforma de juego.
                                 </p>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">
                                     En breve te avisaremos cuando el usuario haya sido desbloqueado.
@@ -153,7 +153,7 @@
                             <h3 class="text-lg leading-6 font-semibold text-gray-900 dark:text-white">Cambiar Contraseña</h3>
                             <div class="mt-3">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    Se generará una solicitud para cambiar la contraseña para <strong>{{ $$player->display_name }}</strong>.
+                                    Se generará una solicitud para cambiar la contraseña para <strong>{{ $player->display_name }}</strong>.
                                 </p>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">
                                     En breve te avisaremos con la nueva contraseña generada.

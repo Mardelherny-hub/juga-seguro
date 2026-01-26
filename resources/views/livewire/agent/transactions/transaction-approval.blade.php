@@ -39,7 +39,7 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <p class="text-xs text-gray-600 dark:text-gray-400">Nombre</p>
-                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $$player->display_name }}</p>
+                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $player->display_name }}</p>
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-600 dark:text-gray-400">Email</p>
