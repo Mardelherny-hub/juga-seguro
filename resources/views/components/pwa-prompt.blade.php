@@ -2,6 +2,7 @@
 <div x-data="{
     show: false,
     isSubscribed: false,
+    showBlockedInstructions: false,
     isInstalled: false,
     device: 'unknown',
     async init() {
@@ -40,16 +41,26 @@
         }
     },
     async activateNotifications() {
-        const result = await PushNotifications.subscribe();
-        if (result.success) {
-            this.isSubscribed = true;
-            if (this.isInstalled) {
-                this.close();
-            }
+    // Verificar si está bloqueado antes de intentar
+    if (Notification.permission === 'denied') {
+        this.showBlockedInstructions = true;
+        return;
+    }
+    
+    const result = await PushNotifications.subscribe();
+    if (result.success) {
+        this.isSubscribed = true;
+        if (this.isInstalled) {
+            this.close();
+        }
+    } else {
+        if (Notification.permission === 'denied') {
+            this.showBlockedInstructions = true;
         } else {
             alert(result.message);
         }
-    },
+    }
+},
     dismiss() {
         // No mostrar por 7 días
         localStorage.setItem('pwa_prompt_dismissed', Date.now() + (7 * 24 * 60 * 60 * 1000));
@@ -88,7 +99,7 @@ style="display: none;"
         <div class="p-6 space-y-4">
             
             <!-- Activar Notificaciones -->
-            <div x-show="!isSubscribed" class="bg-gray-700/50 rounded-xl p-4">
+            <div x-show="!isSubscribed && !showBlockedInstructions" class="bg-gray-700/50 rounded-xl p-4">
                 <div class="flex items-start gap-4">
                     <div class="w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center flex-shrink-0">
                         <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,6 +113,27 @@ style="display: none;"
                                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition">
                             🔔 Activar ahora
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notificaciones Bloqueadas -->
+            <div x-show="showBlockedInstructions" class="bg-red-900/30 rounded-xl p-4 border border-red-600/50">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-red-400 mb-1">Notificaciones Bloqueadas</h4>
+                        <p class="text-gray-300 text-sm mb-3">Tu navegador bloqueó las notificaciones. Para activarlas:</p>
+                        <ol class="text-gray-400 text-sm space-y-2 list-decimal list-inside">
+                            <li>Hacé click en el <span class="text-white">🔒 candado</span> en la barra de direcciones</li>
+                            <li>Buscá <span class="text-white">"Notificaciones"</span></li>
+                            <li>Cambiá de "Bloquear" a <span class="text-green-400">"Permitir"</span></li>
+                            <li>Recargá la página</li>
+                        </ol>
                     </div>
                 </div>
             </div>
@@ -163,8 +195,11 @@ style="display: none;"
         
         <!-- Footer -->
         <div class="px-6 py-4 bg-gray-900/50 border-t border-gray-700">
-            <button @click="dismiss()" class="w-full text-gray-400 hover:text-gray-300 text-sm py-2 transition">
-                No mostrar de nuevo por 7 días
+            <button @click="dismiss()" class="w-full flex items-center justify-center gap-3 bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 rounded-lg py-3 px-4 transition border border-red-600/50">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                <span class="font-medium text-base">Cerrar - Recordar en 7 días</span>
             </button>
         </div>
         

@@ -387,26 +387,38 @@
         <!-- Push Notifications -->
         <script>
             window.pushRoutes = {
-                subscribe: '{{ route("player.push.subscribe") }}',
-                unsubscribe: '{{ route("player.push.unsubscribe") }}',
-                vapidKey: '{{ route("player.push.vapid") }}'
+                subscribe: '{{ route("push.subscribe") }}',
+                unsubscribe: '{{ route("push.unsubscribe") }}',
+                vapidKey: '{{ route("push.vapid") }}'
             };
         </script>
         <script src="/js/push-notifications.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', async function() {
-                if (await PushNotifications.init()) {
-                    const isSubscribed = await PushNotifications.isSubscribed();
-                    if (!isSubscribed && Notification.permission === 'default') {
-                        // Mostrar prompt después de 5 segundos
-                        setTimeout(() => {
-                            if (confirm('¿Deseas recibir notificaciones de tus transacciones?')) {
-                                PushNotifications.subscribe();
-                            }
-                        }, 5000);
-                    }
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (await PushNotifications.init()) {
+                // Registrar SW siempre
+                await PushNotifications.registerServiceWorker();
+                const isSubscribed = await PushNotifications.isSubscribed();
+                if (!isSubscribed && Notification.permission === 'default') {
+                    setTimeout(() => {
+                        if (confirm('¿Deseas recibir notificaciones de nuevas transacciones?')) {
+                            PushNotifications.subscribe();
+                        }
+                    }, 5000);
                 }
-            });
+            }
+            
+            // Listener para sonido de push en PC
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.addEventListener('message', function(event) {
+                    if (event.data && event.data.type === 'PUSH_RECEIVED') {
+                        const audio = new Audio('/sounds/notification.mp3');
+                        audio.volume = 0.5;
+                        audio.play().catch(err => console.log('No se pudo reproducir sonido:', err));
+                    }
+                });
+            }
+        });
         </script>
 
     </body>

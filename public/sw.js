@@ -14,7 +14,16 @@ self.addEventListener('push', function(event) {
     };
     
     event.waitUntil(
-        self.registration.showNotification(data.title || 'Notificación', options)
+        Promise.all([
+            // Mostrar notificación
+            self.registration.showNotification(data.title || 'Notificación', options),
+            // Avisar a las páginas abiertas para reproducir sonido
+            self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
+                clients.forEach(client => {
+                    client.postMessage({ type: 'PUSH_RECEIVED', data: data });
+                });
+            })
+        ])
     );
 });
 
