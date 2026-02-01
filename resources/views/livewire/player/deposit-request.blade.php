@@ -232,7 +232,7 @@
                                         <p class="text-xs text-gray-500">PNG, JPG, WEBP (max. 5MB)</p>
                                     </div>
                                     <input type="file" wire:model="receipt" accept="image/*" class="hidden">
-                                </label>
+                                </label><input type="file" wire:model="receipt" accept="image/*" capture="environment" class="hidden">
                             @endif
 
                             <div wire:loading wire:target="receipt" class="text-sm text-blue-400 mt-2 flex items-center gap-2" style="display: none;" x-show="false" x-cloak>

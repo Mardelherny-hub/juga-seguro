@@ -113,8 +113,12 @@
                                         <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                                         </svg>
-                                        <p class="text-xs text-blue-900 dark:text-blue-100">{!! nl2br(e($msg->message)) !!}</p>
-                                    </div>
+                                            @if($msg->image_path)
+                                            <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
+                                                <img src="{{ $msg->image_url }}" class="max-w-xs max-h-48 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
+                                            </a>
+                                            @endif
+                                        </div>
                                     <p class="text-xs text-blue-600 dark:text-blue-400 mt-1">
                                         Sistema • {{ $msg->created_at->format('d/m H:i') }}
                                     </p>
@@ -124,7 +128,12 @@
                                 @elseif($msg->isFromPlayer())
                                 <div class="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 shadow border border-gray-200 dark:border-gray-700">
                                     <p class="text-sm text-gray-900 dark:text-white">{!! nl2br(e($msg->message)) !!}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        @if($msg->image_path)
+                                        <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
+                                            <img src="{{ $msg->image_url }}" class="max-w-xs max-h-48 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
+                                        </a>
+                                        @endif
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                         {{ $selectedPlayer->username }} • {{ $msg->created_at->format('d/m H:i') }}
                                     </p>
                                 </div>
@@ -133,6 +142,11 @@
                                 @elseif($msg->isFromAgent())
                                 <div class="px-3 py-2 rounded-lg bg-blue-600 text-white shadow">
                                     <p class="text-sm">{!! nl2br(e($msg->message)) !!}</p>
+                                        @if($msg->image_path)
+                                        <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
+                                            <img src="{{ $msg->image_url }}" class="max-w-xs max-h-48 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
+                                        </a>
+                                        @endif
                                     <p class="text-xs text-blue-100 mt-1 text-right">
                                         Tú • {{ $msg->created_at->format('d/m H:i') }}
                                     </p>
@@ -160,24 +174,47 @@
                 <!-- Input de respuesta -->
                 <div class="p-4 border-t border-gray-200 dark:border-gray-700">
                     <form wire:submit.prevent="sendMessage">
-                        <div class="flex gap-3">
-                            <textarea 
-                                wire:model="newMessage" 
-                                rows="2"
-                                placeholder="Escribe tu respuesta..."
-                                class="flex-1 rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500 resize-none"
-                            ></textarea>
+                        <div class="space-y-3">
+                            <!-- Preview de imagen -->
+                            @if($messageImage)
+                            <div class="relative inline-block">
+                                <img src="{{ $messageImage->temporaryUrl() }}" class="h-20 w-20 object-cover rounded-lg border border-gray-300">
+                                <button type="button" wire:click="$set('messageImage', null)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                                    ×
+                                </button>
+                            </div>
+                            @endif
                             
-                            <button 
-                                type="submit"
-                                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition self-end">
-                                Enviar
-                            </button>
+                            <div class="flex gap-3">
+                                <!-- Botón adjuntar imagen -->
+                                <label class="p-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg cursor-pointer transition self-end">
+                                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <input type="file" wire:model="messageImage" accept="image/*" capture="environment" class="hidden">
+                                </label>
+                                
+                                <textarea 
+                                    wire:model="newMessage" 
+                                    rows="2"
+                                    placeholder="Escribe tu respuesta..."
+                                    class="flex-1 rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500 resize-none"
+                                ></textarea>
+                                
+                                <button 
+                                    type="submit"
+                                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition self-end">
+                                    Enviar
+                                </button>
+                            </div>
+                            
+                            @error('messageImage')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
+                            @error('newMessage')
+                                <p class="text-red-500 text-sm">{{ $message }}</p>
+                            @enderror
                         </div>
-                        
-                        @error('newMessage')
-                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
-                        @enderror
                     </form>
                 </div>
             </div>

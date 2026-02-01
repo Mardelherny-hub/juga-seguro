@@ -53,6 +53,11 @@
                         @if($msg->isFromSystem())
                         <div class="px-3 py-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800">
                             <p class="text-xs text-yellow-900 dark:text-yellow-100">{!! nl2br(e($msg->message)) !!}</p>
+                            @if($msg->image_path)
+                            <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
+                                <img src="{{ $msg->image_url }}" class="max-w-xs max-h-32 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
+                            </a>
+                            @endif
                             <p class="text-[10px] text-yellow-600 dark:text-yellow-400 mt-1">
                                 {{ $msg->created_at->format('H:i') }}
                             </p>
@@ -62,6 +67,11 @@
                         @elseif($msg->isFromPlayer())
                         <div class="px-3 py-2 rounded-lg bg-blue-600 text-white shadow">
                             <p class="text-sm">{!! nl2br(e($msg->message)) !!}</p>
+                            @if($msg->image_path)
+                            <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
+                                <img src="{{ $msg->image_url }}" class="max-w-xs max-h-32 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
+                            </a>
+                            @endif
                             <p class="text-[10px] text-blue-100 mt-1 text-right">
                                 {{ $msg->created_at->format('H:i') }}
                             </p>
@@ -71,6 +81,11 @@
                         @elseif($msg->isFromAgent())
                         <div class="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 shadow border border-gray-200 dark:border-gray-700">
                             <p class="text-sm text-gray-900 dark:text-white">{!! nl2br(e($msg->message)) !!}</p>
+                            @if($msg->image_path)
+                            <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
+                                <img src="{{ $msg->image_url }}" class="max-w-xs max-h-32 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
+                            </a>
+                            @endif
                             <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
                                 Soporte • {{ $msg->created_at->format('H:i') }}
                             </p>

@@ -7,14 +7,17 @@ use App\Models\PlayerMessage;
 use App\Services\MessageService;
 use Livewire\Component;
 use App\Livewire\Traits\WithTenantContext;
+use Livewire\WithFileUploads;
 
 class AgentPlayerMessages extends Component
 {
     use WithTenantContext;
+    use WithFileUploads;
     
     public $selectedPlayerId = null;
     public $newMessage = '';
     public $search = '';
+    public $messageImage;
     
     // Templates de respuesta rápida
     public $quickReplies = [
@@ -65,9 +68,12 @@ class AgentPlayerMessages extends Component
     {
         $this->validate([
             'newMessage' => 'required|min:1|max:1000',
+            'messageImage' => 'nullable|image|max:2048',
         ], [
             'newMessage.required' => 'Escribe un mensaje',
             'newMessage.max' => 'El mensaje es muy largo',
+            'messageImage.image' => 'El archivo debe ser una imagen',
+            'messageImage.max' => 'La imagen no debe superar 2MB',
         ]);
 
         $player = Player::find($this->selectedPlayerId);
@@ -76,16 +82,23 @@ class AgentPlayerMessages extends Component
             return;
         }
 
+        $imagePath = null;
+        if ($this->messageImage) {
+            $imagePath = $this->messageImage->store('messages/' . $player->tenant_id, 'public');
+        }
+
         $agent = auth()->user();
         
         $this->messageService->sendAgentMessage(
             $player,
             $agent,
             $this->newMessage,
-            'support'
+            'support',
+            $imagePath
         );
 
         $this->newMessage = '';
+        $this->messageImage = null;
         
         session()->flash('message-sent', true);
     }

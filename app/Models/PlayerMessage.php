@@ -16,6 +16,7 @@ class PlayerMessage extends Model
         'sender_type',
         'sender_id',
         'message',
+        'image_path',
         'category',
         'transaction_id',
         'read_by_player_at',
@@ -96,5 +97,14 @@ class PlayerMessage extends Model
     public function scopeForPlayer($query, $playerId)
     {
         return $query->where('player_id', $playerId);
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image_path) {
+            return null;
+        }
+        
+        return asset('storage/' . $this->image_path);
     }
 }
