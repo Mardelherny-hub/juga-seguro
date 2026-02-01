@@ -55,7 +55,7 @@
                             <p class="text-xs text-yellow-900 dark:text-yellow-100">{!! nl2br(e($msg->message)) !!}</p>
                             @if($msg->image_path)
                             <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
-                                <img src="{{ $msg->image_url }}" class="max-w-xs max-h-32 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
+                                <img src="{{ $msg->image_url }}" class="max-w-full max-h-48 rounded-lg cursor-pointer hover:opacity-90 transition object-contain" alt="Imagen adjunta">
                             </a>
                             @endif
                             <p class="text-[10px] text-yellow-600 dark:text-yellow-400 mt-1">
@@ -69,7 +69,7 @@
                             <p class="text-sm">{!! nl2br(e($msg->message)) !!}</p>
                             @if($msg->image_path)
                             <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
-                                <img src="{{ $msg->image_url }}" class="max-w-xs max-h-32 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
+                                <img src="{{ $msg->image_url }}" class="max-w-full max-h-48 rounded-lg cursor-pointer hover:opacity-90 transition object-contain" alt="Imagen adjunta">
                             </a>
                             @endif
                             <p class="text-[10px] text-blue-100 mt-1 text-right">
@@ -83,7 +83,7 @@
                             <p class="text-sm text-gray-900 dark:text-white">{!! nl2br(e($msg->message)) !!}</p>
                             @if($msg->image_path)
                             <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
-                                <img src="{{ $msg->image_url }}" class="max-w-xs max-h-32 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
+                                <img src="{{ $msg->image_url }}" class="max-w-full max-h-48 rounded-lg cursor-pointer hover:opacity-90 transition object-contain" alt="Imagen adjunta">
                             </a>
                             @endif
                             <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">
