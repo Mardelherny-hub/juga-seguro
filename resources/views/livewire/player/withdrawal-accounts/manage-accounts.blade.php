@@ -234,7 +234,7 @@
                             </div>
 
                             {{-- DNI --}}
-                            <div>
+                            {{-- <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     DNI del Titular
                                 </label>
@@ -248,7 +248,7 @@
                                 @error('holder_dni')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
-                            </div>
+                            </div> --}}
 
                             {{-- Banco --}}
                             <div>
