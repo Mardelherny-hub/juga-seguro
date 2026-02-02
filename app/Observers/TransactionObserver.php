@@ -7,6 +7,7 @@ use App\Models\Player;
 use App\Services\MessageService;
 use App\Services\BonusService;
 use App\Services\WebPushService;
+use App\Services\ApiIntegrationService;
 
 class TransactionObserver
 {
@@ -14,11 +15,11 @@ class TransactionObserver
     protected $bonusService;
     protected $webPushService;
 
-    public function __construct(MessageService $messageService, BonusService $bonusService, WebPushService $webPushService)
+    public function __construct(MessageService $messageService, BonusService $bonusService)
     {
         $this->messageService = $messageService;
         $this->bonusService = $bonusService;
-        $this->webPushService = $webPushService;
+        $this->webPushService = new WebPushService();
     }
 
     /**
@@ -40,13 +41,13 @@ class TransactionObserver
             $this->messageService->notifyWithdrawalRequest($transaction);
         }
 
-        // Push notification a agentes del tenant
+        // Push notification a agentes del tenant (depósitos y retiros)
         if (in_array($transaction->type, ['deposit', 'withdrawal'])) {
             $this->webPushService->sendToTenantUsers(
                 $transaction->player->tenant,
                 '💰 Nueva transacción pendiente',
-                ucfirst($transaction->type === 'deposit' ? 'Depósito' : 'Retiro') . ' de $' . number_format($transaction->amount, 2) . ' - ' . $transaction->player->display_name,
-                '/dashboard/transactions/pending'
+                ucfirst($transaction->type === 'deposit' ? 'Depósito' : 'Retiro') . ' de $' . number_format($transaction->amount, 2) . ' - ' . $transaction->player->name,
+                url('/dashboard/transactions/pending')
             );
         }
 
@@ -94,6 +95,14 @@ class TransactionObserver
             if ($transaction->status === 'completed') {
                 $this->messageService->notifyDepositApproved($transaction);
                 
+                // Push al player
+                $this->webPushService->sendToPlayer(
+                    $transaction->player,
+                    '✅ Depósito aprobado',
+                    'Tu depósito de $' . number_format($transaction->amount, 2) . ' fue acreditado',
+                    '/player/transactions'
+                );
+                
                 // Verificar si es primer depósito para bonos
                 $this->checkFirstDepositBonuses($transaction);
             }
@@ -123,6 +132,14 @@ class TransactionObserver
                 
                 if ($transaction->type === 'deposit') {
                     $this->messageService->notifyDepositRejected($transaction, $reason);
+                    
+                    // Push al player
+                    $this->webPushService->sendToPlayer(
+                        $transaction->player,
+                        '❌ Depósito rechazado',
+                        'Tu depósito de $' . number_format($transaction->amount, 2) . ' fue rechazado',
+                        '/player/transactions'
+                    );
                 } elseif ($transaction->type === 'withdrawal') {
                     $this->messageService->notifyWithdrawalRejected($transaction, $reason);
                 }
@@ -134,6 +151,14 @@ class TransactionObserver
         if ($transaction->type === 'withdrawal') {
             if ($transaction->status === 'completed') {
                 $this->messageService->notifyWithdrawalApproved($transaction);
+                
+                // Push al player
+                $this->webPushService->sendToPlayer(
+                    $transaction->player,
+                    '✅ Retiro aprobado',
+                    'Tu retiro de $' . number_format($transaction->amount, 2) . ' fue procesado',
+                    '/player/transactions'
+                );
             }
 
             if ($transaction->status === 'rejected') {
@@ -163,9 +188,22 @@ class TransactionObserver
                     $this->messageService->notifyDepositRejected($transaction, $reason);
                 } elseif ($transaction->type === 'withdrawal') {
                     $this->messageService->notifyWithdrawalRejected($transaction, $reason);
+                    
+                    // Push al player
+                    $this->webPushService->sendToPlayer(
+                        $transaction->player,
+                        '❌ Retiro rechazado',
+                        'Tu retiro de $' . number_format($transaction->amount, 2) . ' fue rechazado',
+                        '/player/transactions'
+                    );
                 }
                 // Para los tipos de cuenta, ya se maneja en TransactionApproval/Rejection
             }
+        }
+
+        // Disparar hacia API externa del tenant (si está configurada)
+        if ($transaction->status === 'completed') {
+            $this->fireApiIntegration($transaction);
         }
 
         // Solicitudes de cuenta (account_creation, account_unlock, password_reset)
@@ -292,6 +330,50 @@ class TransactionObserver
                 $referralBonusAmount,
                 "tu primer depósito"
             );
+        }
+    }
+
+    /**
+     * Disparar acción hacia la API externa del tenant (si está configurada)
+     */
+    protected function fireApiIntegration(Transaction $transaction): void
+    {
+        try {
+            $player = $transaction->player;
+            $tenant = $player->tenant;
+            $service = ApiIntegrationService::forTenant($tenant);
+
+            if (!$service) {
+                return;
+            }
+
+            $notes = $transaction->notes ?? '';
+
+            match ($transaction->type) {
+                'account_creation' => (function () use ($service, $player, $notes) {
+                    $password = null;
+                    if (preg_match('/Contraseña:\s*(\S+)/', $notes, $m)) {
+                        $password = $m[1];
+                    }
+                    $service->createUser($player, $password);
+                })(),
+                'password_reset' => (function () use ($service, $player, $notes) {
+                    $password = '';
+                    if (preg_match('/Nueva contraseña:\s*(\S+)/', $notes, $m)) {
+                        $password = $m[1];
+                    }
+                    $service->updatePassword($player, $password);
+                })(),
+                'account_unlock' => $service->unlockUser($player),
+                'deposit' => $service->deposit($player, (float) $transaction->amount),
+                'withdrawal' => $service->withdraw($player, (float) $transaction->amount),
+                default => null,
+            };
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('API Integration dispatch failed', [
+                'transaction_id' => $transaction->id,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 }
