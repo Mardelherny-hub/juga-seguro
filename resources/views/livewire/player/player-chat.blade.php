@@ -106,27 +106,50 @@
         <!-- Input de mensaje -->
         <div class="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-b-lg">
             <form wire:submit.prevent="sendMessage">
-                <div class="flex gap-2">
-                    <input 
-                        wire:model="newMessage" 
-                        type="text"
-                        placeholder="Escribe un mensaje..."
-                        class="flex-1 px-3 py-2 rounded-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500 text-sm"
-                        @keydown.enter.prevent="$wire.sendMessage()"
-                    />
+                <div class="space-y-2">
+                    <!-- Preview de imagen -->
+                    @if($messageImage)
+                    <div class="relative inline-block">
+                        <img src="{{ $messageImage->temporaryUrl() }}" class="h-16 w-16 object-cover rounded-lg border border-gray-300">
+                        <button type="button" wire:click="$set('messageImage', null)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                            ×
+                        </button>
+                    </div>
+                    @endif
                     
-                    <button 
-                        type="submit"
-                        class="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition flex-shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                        </svg>
-                    </button>
+                    <div class="flex gap-2">
+                        <!-- Botón adjuntar imagen -->
+                        <label class="p-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-full cursor-pointer transition flex-shrink-0">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <input type="file" wire:model="messageImage" accept="image/*" class="hidden">
+                        </label>
+                        
+                        <input 
+                            wire:model="newMessage" 
+                            type="text"
+                            placeholder="Escribe un mensaje..."
+                            class="flex-1 px-3 py-2 rounded-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500 text-sm"
+                            @keydown.enter.prevent="$wire.sendMessage()"
+                        />
+                        
+                        <button 
+                            type="submit"
+                            class="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition flex-shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    @error('messageImage')
+                    <p class="text-red-500 text-xs">{{ $message }}</p>
+                    @enderror
+                    @error('newMessage')
+                    <p class="text-red-500 text-xs">{{ $message }}</p>
+                    @enderror
                 </div>
-                
-                @error('newMessage')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
             </form>
         </div>
     </div>
@@ -135,21 +158,44 @@
 
 @script
 <script>
-    // Auto-scroll al último mensaje cuando se abre o llegan mensajes nuevos
-    $wire.on('message-sent', () => {
-        setTimeout(scrollToBottom, 100);
-    });
+    let userIsScrolling = false;
     
-    Livewire.hook('morph.updated', () => {
-        scrollToBottom();
-    });
+    // Detectar si el usuario está leyendo mensajes anteriores
+    const container = document.getElementById('chat-messages');
+    if (container) {
+        container.addEventListener('scroll', function() {
+            const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 100;
+            userIsScrolling = !isAtBottom;
+        });
+    }
     
-    function scrollToBottom() {
+    // Auto-scroll solo si el usuario está cerca del fondo
+    function scrollToBottomIfNeeded() {
+        if (userIsScrolling) return;
         const container = document.getElementById('chat-messages');
         if (container) {
             container.scrollTop = container.scrollHeight;
         }
     }
+    
+    // Scroll forzado (cuando envía mensaje)
+    function scrollToBottom() {
+        userIsScrolling = false;
+        const container = document.getElementById('chat-messages');
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
+    
+    // Al enviar mensaje, siempre bajar
+    $wire.on('message-sent', () => {
+        setTimeout(scrollToBottom, 100);
+    });
+    
+    // Al recibir mensajes, solo bajar si está cerca del fondo
+    Livewire.hook('morph.updated', () => {
+        setTimeout(scrollToBottomIfNeeded, 100);
+    });
     
     // Scroll inicial cuando se abre
     setTimeout(scrollToBottom, 200);

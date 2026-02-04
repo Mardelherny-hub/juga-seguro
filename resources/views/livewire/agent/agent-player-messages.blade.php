@@ -33,6 +33,18 @@
                 
                 <!-- Lista de jugadores -->
                 <div class="divide-y divide-gray-200 dark:divide-gray-700 max-h-[600px] overflow-y-auto">
+                    @php
+                        $searchTerm = mb_strtolower($search, 'UTF-8');
+                        $filteredAndSortedPlayers = $players
+                            ->filter(function($player) use ($searchTerm) {
+                                if (empty($searchTerm)) return true;
+                                return Str::contains(mb_strtolower($player->username, 'UTF-8'), $searchTerm) || 
+                                    Str::contains($player->phone, $searchTerm);
+                            })
+                            ->sortByDesc(function($player) {
+                                return $player->messages->max('created_at') ?? $player->created_at;
+                            });
+                    @endphp
                     @forelse($players as $player)
                     <button 
                         wire:click="selectPlayer({{ $player->id }})"
@@ -56,12 +68,13 @@
                             @endif
                         </div>
                         
-                        @if($player->messages->isNotEmpty())
+                        @php $latestMsg = $player->messages->sortByDesc('created_at')->first(); @endphp
+                        @if($latestMsg)
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                            {{ Str::limit($player->messages->first()->message, 50) }}
+                            {{ Str::limit($latestMsg->message, 50) }}
                         </p>
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                            {{ $player->messages->first()->created_at->diffForHumans() }}
+                            {{ $latestMsg->created_at->diffForHumans() }}
                         </p>
                         @endif
                     </button>
@@ -70,7 +83,7 @@
                         <svg class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                         </svg>
-                        <p>No hay mensajes aún</p>
+                        <p>{{ $search ? 'No se encontraron jugadores para "' . $search . '"' : 'No hay mensajes aún' }}</p>
                     </div>
                     @endforelse
                 </div>
@@ -113,6 +126,7 @@
                                         <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                                         </svg>
+                                        <p class="text-xs text-blue-900 dark:text-blue-100">{!! nl2br(e($msg->message)) !!}</p>
                                             @if($msg->image_path)
                                             <a href="{{ $msg->image_url }}" target="_blank" class="block mt-2">
                                                 <img src="{{ $msg->image_url }}" class="max-w-xs max-h-48 rounded-lg cursor-pointer hover:opacity-90 transition" alt="Imagen adjunta">
@@ -234,7 +248,7 @@
 <script>
     let shouldScroll = true;
     
-    // Auto-scroll al último mensaje
+    // Auto-scroll al último mensaje (solo si corresponde)
     function scrollToBottom() {
         if (!shouldScroll) return;
         
@@ -244,29 +258,27 @@
         }
     }
     
-    // Detectar si el usuario está scrolleando manualmente
-    document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('agent-messages-container');
-        if (container) {
-            container.addEventListener('scroll', function() {
-                const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
-                shouldScroll = isAtBottom;
-            });
-        }
-    });
+    // Detectar si el usuario está leyendo mensajes anteriores
+    const container = document.getElementById('agent-messages-container');
+    if (container) {
+        container.addEventListener('scroll', function() {
+            const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 100;
+            shouldScroll = isAtBottom;
+        });
+    }
     
-    // Scroll cuando se envía un mensaje
+    // Scroll cuando se envía un mensaje (siempre bajar)
     $wire.on('message-sent', () => {
         shouldScroll = true;
         setTimeout(scrollToBottom, 100);
     });
     
-    // Scroll cuando llegan mensajes nuevos (solo si está al final)
+    // Scroll cuando llegan mensajes nuevos (solo si está cerca del fondo)
     Livewire.hook('morph.updated', () => {
         setTimeout(scrollToBottom, 100);
     });
     
-    // Scroll inicial al seleccionar jugador
+    // Scroll inicial al seleccionar jugador (siempre bajar)
     $wire.on('playerSelected', () => {
         shouldScroll = true;
         setTimeout(scrollToBottom, 200);

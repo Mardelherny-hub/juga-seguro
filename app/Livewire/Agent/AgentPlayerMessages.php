@@ -113,37 +113,37 @@ class AgentPlayerMessages extends Component
     {
         $tenantId = auth()->user()->tenant_id;
         
-        // Obtener el último mensaje de cada jugador con su fecha
-        $latestMessages = PlayerMessage::where('tenant_id', $tenantId)
-            ->selectRaw('player_id, MAX(created_at) as last_message_at')
-            ->groupBy('player_id');
+        // Jugadores que tienen mensajes, ordenados por última actividad
+        $playerIds = PlayerMessage::where('tenant_id', $tenantId)
+            ->select('player_id')
+            ->distinct()
+            ->pluck('player_id');
 
-        $query = Player::where('tenant_id', $tenantId)
-            ->joinSub($latestMessages, 'latest', function ($join) {
-                $join->on('players.id', '=', 'latest.player_id');
-            });
+        $query = Player::whereIn('id', $playerIds);
 
         // Búsqueda
+        // Búsqueda (ILIKE para case-insensitive en PostgreSQL)
         if ($this->search) {
-            $query->where(function($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('phone', 'like', '%' . $this->search . '%')
-                ->orWhere('email', 'like', '%' . $this->search . '%');
+            $searchTerm = '%' . $this->search . '%';
+            $query->where(function($q) use ($searchTerm) {
+                $q->whereRaw('LOWER(username) LIKE LOWER(?)', [$searchTerm])
+                ->orWhere('phone', 'like', $searchTerm)
+                ->orWhere('email', 'ilike', $searchTerm);
             });
         }
 
         return $query->withCount([
-                'messages as unread_count' => function($q) {
-                    $q->where('sender_type', 'player')
-                    ->whereNull('read_by_agent_at');
-                }
-            ])
-            ->with(['messages' => function($q) {
-                $q->latest()->limit(1);
-            }])
-            ->orderByDesc('unread_count')
-            ->orderByDesc('last_message_at')
-            ->get();
+            'messages as unread_count' => function($q) {
+                $q->where('sender_type', 'player')
+                ->whereNull('read_by_agent_at');
+            }
+        ])
+        ->with(['messages' => function($q) {
+            $q->latest()->limit(1);
+        }])
+        ->withMax('messages', 'created_at')
+        ->orderByDesc('messages_max_created_at')
+        ->get();
     }
 
     public function getSelectedPlayerMessages()
