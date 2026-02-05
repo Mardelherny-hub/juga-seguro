@@ -56,8 +56,8 @@ Route::prefix('player')
         })->name('logout');
 
         // Push Notifications
-        Route::post('/push/subscribe', [App\Http\Controllers\PushSubscriptionController::class, 'subscribe'])->name('push.subscribe');
-        Route::post('/push/unsubscribe', [App\Http\Controllers\PushSubscriptionController::class, 'unsubscribe'])->name('push.unsubscribe');
-        Route::get('/push/vapid-key', [App\Http\Controllers\PushSubscriptionController::class, 'getVapidPublicKey'])->name('push.vapid');
+        Route::post('/push/subscribe', [App\Http\Controllers\PushSubscriptionController::class, 'subscribe'])->name('player.push.subscribe');
+        Route::post('/push/unsubscribe', [App\Http\Controllers\PushSubscriptionController::class, 'unsubscribe'])->name('player.push.unsubscribe');
+        Route::get('/push/vapid-key', [App\Http\Controllers\PushSubscriptionController::class, 'getVapidPublicKey'])->name('player.push.vapid');
         
     });

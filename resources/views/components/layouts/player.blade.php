@@ -387,9 +387,9 @@
         <!-- Push Notifications -->
         <script>
             window.pushRoutes = {
-                subscribe: '{{ route("push.subscribe") }}',
-                unsubscribe: '{{ route("push.unsubscribe") }}',
-                vapidKey: '{{ route("push.vapid") }}'
+                subscribe: '{{ route("player.push.subscribe") }}',
+                unsubscribe: '{{ route("player.push.unsubscribe") }}',
+                vapidKey: '{{ route("player.push.vapid") }}'
             };
         </script>
         <script src="/js/push-notifications.js"></script>
